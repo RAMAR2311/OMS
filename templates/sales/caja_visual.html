@@ -351,6 +351,10 @@
 
                 <!-- Botón de Cobro Masivo y Limpieza -->
                 <div class="d-grid gap-2 mt-auto pt-3">
+                    <!-- Botón para regresar al catálogo desde el celular si se bajó por error -->
+                    <button type="button" class="btn btn-outline-primary btn-lg rounded-3 py-2 fw-bold d-lg-none" onclick="volverAlCatalogo()">
+                        <i class="fa-solid fa-arrow-up me-2"></i> Subir / Agregar más productos
+                    </button>
                     <button type="button" class="btn btn-blue btn-lg rounded-3 py-3 shadow-sm text-uppercase fw-bold" id="btn_process_sale">
                         <i class="fa-solid fa-credit-card me-2"></i> Procesar Cobro <span class="badge bg-white bg-opacity-25 ms-1 fw-normal d-none d-md-inline" style="font-size: 0.7rem;">F4</span>
                     </button>
@@ -362,6 +366,16 @@
         </div>
     </div>
 </div>
+
+<!-- Botón flotante para subir rápidamente al catálogo en móvil cuando se está abajo -->
+<button type="button" 
+        id="btnSubirCatalogoFlotante" 
+        class="btn btn-primary rounded-circle shadow-lg position-fixed d-lg-none d-flex align-items-center justify-content-center" 
+        style="bottom: 85px; right: 18px; width: 48px; height: 48px; z-index: 1040; display: none !important;" 
+        onclick="volverAlCatalogo()" 
+        title="Subir al catálogo">
+    <i class="fa-solid fa-arrow-up fs-5"></i>
+</button>
 
 <!-- Barra Flotante Inferior de Cobro para Celulares y Tablets -->
 <div class="mobile-cart-bar" id="mobileCartBar">
@@ -861,9 +875,20 @@
         }
         const searchInput = document.getElementById('productSearch');
         if (searchInput && window.innerWidth < 992) {
-            setTimeout(() => searchInput.focus(), 300);
+            setTimeout(() => searchInput.focus(), 350);
         }
     }
+
+    // Monitorear scroll en móviles para mostrar/ocultar el botón flotante de "Subir"
+    window.addEventListener('scroll', function() {
+        const btnSubir = document.getElementById('btnSubirCatalogoFlotante');
+        if (!btnSubir) return;
+        if (window.innerWidth < 992 && window.scrollY > 400) {
+            btnSubir.style.setProperty('display', 'flex', 'important');
+        } else {
+            btnSubir.style.setProperty('display', 'none', 'important');
+        }
+    });
 
     function cobrarDesdeMovil() {
         desplazarACaja();
