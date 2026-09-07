@@ -120,7 +120,7 @@
 
 <div class="row h-100 g-4">
     <!-- Panel Izquierdo: Catálogo de Productos -->
-    <div class="col-lg-8 d-flex flex-column h-100">
+    <div class="col-lg-8 d-flex flex-column h-100" id="catalogo_productos_panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h2 class="fw-bold text-brand-black m-0"><i class="fa-solid fa-store text-brand-pink me-2"></i> Caja Rápida Visual</h2>
@@ -248,7 +248,12 @@
         <div class="card card-custom p-4 position-sticky" style="top: 90px; height: auto;">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold m-0"><i class="fa-solid fa-cart-shopping text-brand-blue me-2"></i> Balance</h5>
-                <span class="badge bg-secondary rounded-pill px-3 py-2" id="total_items">0 items</span>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill fw-bold d-lg-none" onclick="volverAlCatalogo()">
+                        <i class="fa-solid fa-plus me-1"></i> Agregar más
+                    </button>
+                    <span class="badge bg-secondary rounded-pill px-3 py-2" id="total_items">0 items</span>
+                </div>
             </div>
             
             <div class="card-body p-0 overflow-auto mb-3" style="max-height: 38vh;" id="cartContainer">
@@ -844,6 +849,19 @@
         const panel = document.getElementById('panel_caja_cierre');
         if (panel) {
             panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function volverAlCatalogo() {
+        const catalogo = document.getElementById('catalogo_productos_panel');
+        if (catalogo) {
+            catalogo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        const searchInput = document.getElementById('productSearch');
+        if (searchInput && window.innerWidth < 992) {
+            setTimeout(() => searchInput.focus(), 300);
         }
     }
 
