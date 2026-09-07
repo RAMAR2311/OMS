@@ -234,25 +234,20 @@ def create_app():
         if value is None:
             return "0"
         try:
-            # Formateo a moneda colombiana (separador de miles con coma, como pidió el usuario)
             return "{:,.0f}".format(float(value))
         except (ValueError, TypeError):
             return value
 
     @app.route('/')
     def index():
-        # Redirección de sesión y rol de usuario
         if not current_user.is_authenticated:
             return redirect(url_for('auth_bp.login'))
-            
         if current_user.rol == 'admin':
             return redirect(url_for('admin_bp.dashboard'))
-            
-        # Por defecto, Vendedores van directo a Cajas
-        return redirect(url_for('sales_bp.procesar_venta'))
+        return redirect(url_for('sales_bp.caja_visual'))
 
     @app.route('/sw.js')
-    def service_worker():
+    def sw():
         from flask import send_from_directory
         return send_from_directory('static', 'sw.js', mimetype='application/javascript')
 
