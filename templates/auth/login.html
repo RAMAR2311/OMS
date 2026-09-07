@@ -3,9 +3,9 @@
 {% block content %}
 <style>
     body {
-        background-color: #F8F9FA !important;
-        background-image: radial-gradient(circle at 85% 15%, rgba(255, 0, 127, 0.07) 0%, transparent 50%),
-                          radial-gradient(circle at 15% 85%, rgba(15, 23, 42, 0.04) 0%, transparent 50%) !important;
+        background-color: #F5F5F5 !important;
+        background-image: radial-gradient(circle at 85% 15%, rgba(229, 57, 53, 0.06) 0%, transparent 50%),
+                          radial-gradient(circle at 15% 85%, rgba(0, 0, 0, 0.04) 0%, transparent 50%) !important;
     }
 
     .navbar-custom {
@@ -14,36 +14,35 @@
 
     .login-card {
         background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-top: 5px solid #FF007F !important;
-        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06), 0 0 25px rgba(255, 0, 127, 0.05);
+        border: 1px solid #E0E0E0;
+        border-top: 5px solid #E53935 !important;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06), 0 0 25px rgba(229, 57, 53, 0.06);
         border-radius: 24px;
     }
 
     .login-card .form-control {
-        background-color: #F8FAFC !important;
+        background-color: #FAFAFA !important;
         border: 1px solid #CBD5E1 !important;
-        color: #0F172A !important;
+        color: #000000 !important;
         font-family: var(--font-body);
         transition: all 0.2s ease;
     }
 
     .login-card .form-control:focus {
-        border-color: #FF007F !important;
-        box-shadow: 0 0 0 4px rgba(255, 0, 127, 0.15) !important;
+        border-color: #E53935 !important;
+        box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.15) !important;
         background-color: #FFFFFF !important;
     }
 
     .login-brand-display {
         font-family: var(--font-heading);
-        font-weight: 900;
-        font-style: italic;
-        letter-spacing: 2px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
     }
 
     .brand-hero-card {
         background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        border: 1px solid #E0E0E0;
         border-radius: 24px;
         box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -60,40 +59,40 @@
     <div class="col-md-6 col-lg-5 mb-4">
         <div class="card login-card p-4 p-md-5">
             <div class="text-center mb-4">
-                <!-- Imagen / Logo de ULTRA TECH -->
+                <!-- Logotipo 3D Oficial Punto Cel -->
                 <div class="mb-3 d-inline-block">
-                    <img src="{{ url_for('static', filename='img/ultratech.jpg') }}" 
-                         alt="ULTRA TECH Logo" 
+                    <img src="{{ url_for('static', filename='img/puntocel.png') }}" 
+                         alt="Punto Cel Logo" 
                          class="img-fluid rounded-4 shadow-sm" 
-                         style="width: 84px; height: 84px; object-fit: cover; border: 2px solid #F1F5F9;">
+                         style="width: 88px; height: 88px; object-fit: contain; background: #FFFFFF; padding: 6px; border: 2px solid #F0F0F0;">
                 </div>
                 <div class="d-flex justify-content-center align-items-center mb-1">
-                    <span class="fs-2 fw-bold font-orbitron" style="color: #0F172A; letter-spacing: 1px; font-style: italic;">ULTRA</span>
-                    <span class="fs-2 fw-bold font-orbitron ms-2" style="color: #FF007F; letter-spacing: 1px; font-style: italic; text-shadow: 0 0 10px rgba(255,0,127,0.25);">TECH</span>
+                    <span class="fs-2 fw-bold font-brand" style="color: #000000; font-family: var(--font-heading); font-weight: 800; letter-spacing: 0.5px;">PUNTO</span>
+                    <span class="fs-2 fw-bold font-brand ms-2" style="color: #E53935; font-family: var(--font-heading); font-weight: 800; letter-spacing: 0.5px;">CEL</span>
                 </div>
-                <p class="text-secondary small mb-0 fw-semibold">Sistema Operativo POS & Gestión Comercial</p>
+                <p class="text-muted small mb-0 fw-medium">Innovación Móvil • Sistema POS & Gestión Comercial</p>
             </div>
             
             <form method="POST" action="/auth/login">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="mb-3">
-                    <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Correo Electrónico</label>
+                    <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px; font-family: var(--font-heading);">Correo Electrónico</label>
                     <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                        <span class="input-group-text bg-white border-end-0 text-secondary"><i class="fa-solid fa-envelope" style="color: #FF007F;"></i></span>
-                        <input type="email" class="form-control form-control-lg border-start-0" name="email" required placeholder="usuario@ultratech.com">
+                        <span class="input-group-text bg-white border-end-0 text-secondary"><i class="fa-solid fa-envelope" style="color: #E53935;"></i></span>
+                        <input type="email" class="form-control form-control-lg border-start-0" name="email" required placeholder="usuario@puntocel.com">
                     </div>
                 </div>
                 
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Contraseña</label>
+                    <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px; font-family: var(--font-heading);">Contraseña</label>
                     <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                        <span class="input-group-text bg-white border-end-0 text-secondary"><i class="fa-solid fa-lock" style="color: #FF007F;"></i></span>
+                        <span class="input-group-text bg-white border-end-0 text-secondary"><i class="fa-solid fa-lock" style="color: #E53935;"></i></span>
                         <input type="password" class="form-control form-control-lg border-start-0" name="password" required placeholder="••••••••">
                     </div>
                 </div>
                 
                 <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-pink btn-lg rounded-pill fw-bold text-uppercase py-3 shadow" style="letter-spacing: 1px;">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold text-uppercase py-3 shadow" style="background: var(--brand-gradient) !important; letter-spacing: 1px; font-family: var(--font-heading);">
                         Iniciar Sesión <i class="fa-solid fa-arrow-right ms-2"></i>
                     </button>
                 </div>
@@ -101,23 +100,23 @@
         </div>
     </div>
 
-    <!-- Columna Derecha: Branding Tech Visual con ultratech.jpg -->
+    <!-- Columna Derecha: Branding Tech Visual Punto Cel -->
     <div class="col-md-6 col-lg-5 d-none d-md-flex flex-column justify-content-center align-items-center text-center p-4">
         <div class="p-4 p-lg-5 brand-hero-card text-center" style="max-width: 440px; width: 100%;">
-            <div class="mb-4">
-                <img src="{{ url_for('static', filename='img/ultratech.jpg') }}" 
-                     alt="ULTRA TECH" 
+            <div class="mb-4 text-center">
+                <img src="{{ url_for('static', filename='img/puntocel.png') }}" 
+                     alt="Punto Cel - Innovación Móvil" 
                      class="img-fluid rounded-4 shadow-sm" 
-                     style="max-width: 260px; width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; border: 1px solid #E2E8F0;">
+                     style="max-width: 250px; width: 100%; height: auto; aspect-ratio: 1/1; object-fit: contain; background: #FFFFFF; padding: 12px; border: 1px solid #E0E0E0;">
             </div>
             <div class="display-5 login-brand-display mb-2">
-                <span style="color: #0F172A;">ULTRA</span><span style="color: #FF007F;">TECH</span>
+                <span style="color: #000000; font-weight: 800;">PUNTO</span> <span style="color: #E53935; font-weight: 800;">CEL</span>
             </div>
-            <div class="badge rounded-pill px-3 py-2 fw-semibold mb-3" style="background-color: rgba(255,0,127,0.08); color: #FF007F; border: 1px solid rgba(255,0,127,0.3); font-size: 0.82rem; letter-spacing: 1px;">
-                ACCESORIOS DE TELÉFONO & POS ERP
+            <div class="badge rounded-pill px-3 py-2 fw-semibold mb-3" style="background-color: rgba(229, 57, 53, 0.08); color: #E53935; border: 1px solid rgba(229, 57, 53, 0.25); font-size: 0.82rem; letter-spacing: 1px; font-family: var(--font-heading);">
+                INNOVACIÓN MÓVIL • POS ERP
             </div>
-            <p class="text-secondary mb-0 fw-medium" style="line-height: 1.6; font-size: 0.92rem;">
-                Plataforma de alta velocidad para control de inventario, facturación central y gestión de cartera mayorista.
+            <p class="text-secondary mb-0 fw-normal" style="line-height: 1.6; font-size: 0.92rem; font-family: var(--font-body); color: #4D4D4D !important;">
+                Plataforma integral para facturación de alta velocidad, control de inventario y gestión comercial corporativa.
             </p>
         </div>
     </div>

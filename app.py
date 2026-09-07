@@ -293,37 +293,37 @@ if __name__ == '__main__':
         # Crear la carpeta de imágenes si no existe
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
         
-        if not User.query.filter_by(email='admin@ultratech.com').first():
+        if not User.query.filter_by(email='admin@puntocel.com').first() and not User.query.filter_by(email='admin@ultratech.com').first():
             master_admin = User(
                 nombre='Administrador Principal',
-                email='admin@ultratech.com',
+                email='admin@puntocel.com',
                 password_hash=generate_password_hash('Admin123'),
                 rol='admin'
             )
             db.session.add(master_admin)
             db.session.commit()
-            print("[INFO] Usuario maestro 'admin@ultratech.com' fue creado automaticamente.")
+            print("[INFO] Usuario maestro 'admin@puntocel.com' fue creado automaticamente.")
 
-        if not User.query.filter_by(email='bodega@ultratech.com').first():
+        if not User.query.filter_by(email='bodega@puntocel.com').first() and not User.query.filter_by(email='bodega@ultratech.com').first():
             bodega_user = User(
                 nombre='Encargado de Bodega',
-                email='bodega@ultratech.com',
+                email='bodega@puntocel.com',
                 password_hash=generate_password_hash('Bodega123'),
                 rol='bodega'
             )
             db.session.add(bodega_user)
             db.session.commit()
-            print("[INFO] Usuario bodega 'bodega@ultratech.com' fue creado automaticamente.")
+            print("[INFO] Usuario bodega 'bodega@puntocel.com' fue creado automaticamente.")
 
-        if not User.query.filter_by(email='vendedor_bodega@ultratech.com').first():
+        if not User.query.filter_by(email='vendedor_bodega@puntocel.com').first() and not User.query.filter_by(email='vendedor_bodega@ultratech.com').first():
             vb_user = User(
                 nombre='Vendedor de Bodega',
-                email='vendedor_bodega@ultratech.com',
+                email='vendedor_bodega@puntocel.com',
                 password_hash=generate_password_hash('Vendedor123'),
                 rol='vendedor_bodega'
             )
             db.session.add(vb_user)
             db.session.commit()
-            print("[INFO] Usuario vendedor bodega 'vendedor_bodega@ultratech.com' fue creado automaticamente.")
+            print("[INFO] Usuario vendedor bodega 'vendedor_bodega@puntocel.com' fue creado automaticamente.")
             
     app.run(debug=True)

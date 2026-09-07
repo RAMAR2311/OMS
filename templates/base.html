@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ULTRA TECH - CRM & POS{% endblock %}</title>
+    <title>{% block title %}PUNTO CEL - CRM & POS{% endblock %}</title>
     <!-- Favicon y PWA Manifest -->
     <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=5">
     <link rel="shortcut icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=5">
@@ -13,16 +13,16 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="ULTRA TECH">
-    <meta name="application-name" content="ULTRA TECH">
+    <meta name="apple-mobile-web-app-title" content="PUNTO CEL">
+    <meta name="application-name" content="PUNTO CEL">
     <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}">
     <link rel="apple-touch-icon" sizes="512x512" href="{{ url_for('static', filename='img/icons/icon-512x512.png') }}">
-    <meta name="theme-color" content="#FFFFFF">
+    <meta name="theme-color" content="#E53935">
 
-    <!-- Google Fonts: Orbitron & Montserrat -->
+    <!-- Google Fonts: Montserrat & Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Orbitron:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,40 +30,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* =========================================================
-           ULTRA TECH DESIGN SYSTEM: CLEAN WHITE / MAGENTA TECH
-           Paleta Oficial: #FFFFFF / #F8F9FA (Fondo Blanco),
-           #FF007F (Magenta Neón), #CC0052 (Magenta Oscuro/Hover),
-           #0F172A (Texto Principal Oscuro de Alta Legibilidad)
+           PUNTO CEL DESIGN SYSTEM: CLEAN WHITE / INTENSE RED
+           Paleta Oficial: #FFFFFF / #F5F5F5 (Fondo Claro Corporativo),
+           #E53935 (Rojo Intenso Brand/Accent), #990000 (Rojo Oscuro Hover/Sombras),
+           #000000 (Negro Puro Headings/Brand), #333333 / #4D4D4D (Texto Secundario)
            ========================================================= */
         :root {
-            --brand-bg: #F8F9FA;            /* Fondo blanco limpio */
+            --brand-bg: #F5F5F5;            /* Fondo gris claro corporativo */
             --brand-white: #FFFFFF;         /* Blanco puro */
             --brand-surface: #FFFFFF;       /* Tarjetas blancas */
             --brand-surface-card: #FFFFFF;
             --brand-card-bg: #FFFFFF;
-            --brand-surface-hover: #F1F5F9;
+            --brand-surface-hover: #F8F9FA;
 
-            --brand-primary: #FF007F;       /* Rosa Neón / Magenta Brillante */
-            --brand-secondary: #CC0052;     /* Magenta Oscuro */
-            --brand-pink: #FF007F;
-            --brand-red: #FF007F;
-            --brand-cyan: #FF007F;
-            --brand-blue: #0F172A;
+            --brand-primary: #E53935;       /* Rojo Intenso */
+            --brand-secondary: #990000;     /* Rojo Oscuro */
+            --brand-pink: #E53935;          /* Alias de retrocompatibilidad */
+            --brand-red: #E53935;
+            --brand-cyan: #E53935;
+            --brand-blue: #000000;
 
-            --brand-text: #0F172A;          /* Texto principal oscuro de máxima legibilidad */
-            --brand-text-dark: #0F172A;
-            --brand-black: #0F172A;
-            --brand-text-muted: #64748B;    /* Gris secundario para descripciones */
-            --brand-border: #E2E8F0;        /* Bordes claros y limpios */
-            --brand-border-dark: #CBD5E1;
+            --brand-text: #000000;          /* Texto principal negro puro */
+            --brand-text-dark: #000000;
+            --brand-black: #000000;
+            --brand-text-muted: #4D4D4D;    /* Gris secundario para descripciones y tablas */
+            --brand-border: #E0E0E0;        /* Bordes sutiles y limpios */
+            --brand-border-dark: #BDBDBD;
 
-            --brand-gradient: linear-gradient(135deg, #FF007F 0%, #CC0052 100%);
-            --brand-gradient-hover: linear-gradient(135deg, #FF268F 0%, #E6005C 100%);
-            --brand-neon-glow: 0 0 16px rgba(255, 0, 127, 0.35);
-            --brand-neon-glow-sm: 0 0 8px rgba(255, 0, 127, 0.25);
+            --brand-gradient: linear-gradient(135deg, #E53935 0%, #990000 100%);
+            --brand-gradient-hover: linear-gradient(135deg, #EF5350 0%, #B71C1C 100%);
+            --brand-neon-glow: 0 4px 15px rgba(229, 57, 53, 0.35);
+            --brand-neon-glow-sm: 0 2px 8px rgba(229, 57, 53, 0.25);
 
-            --font-heading: 'Orbitron', -apple-system, sans-serif;
-            --font-body: 'Montserrat', -apple-system, sans-serif;
+            --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
@@ -73,48 +73,48 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4, h5, h6, .font-orbitron {
+        h1, h2, h3, h4, h5, h6, .font-orbitron, .font-brand {
             font-family: var(--font-heading);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.2px;
             color: var(--brand-text);
+            font-weight: 700;
         }
 
         /* Clases base con alto contraste */
-        .bg-brand-blue { background-color: #0F172A !important; color: #FFFFFF !important; border: 1px solid #0F172A; }
-        .text-brand-blue { color: #0F172A !important; font-weight: 700; }
+        .bg-brand-blue { background-color: #000000 !important; color: #FFFFFF !important; border: 1px solid #000000; }
+        .text-brand-blue { color: #000000 !important; font-weight: 700; }
         .bg-brand-pink { background: var(--brand-gradient) !important; color: #FFFFFF !important; box-shadow: var(--brand-neon-glow-sm); }
         .bg-brand-white { background-color: #FFFFFF !important; color: var(--brand-text) !important; border: 1px solid var(--brand-border); }
         
         .text-brand-black { color: var(--brand-text) !important; }
         .text-brand-pink { color: var(--brand-primary) !important; font-weight: 700; }
 
-        /* Navbar Dark Tech para contraste y elegancia */
+        /* Navbar Clean White para Punto Cel */
         .navbar-custom {
-            background-color: #0F172A;
+            background-color: #FFFFFF !important;
             border-bottom: 3px solid var(--brand-primary);
             padding: 0.85rem 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         
         .navbar-custom .navbar-brand {
             font-family: var(--font-heading);
-            font-weight: 900;
-            font-style: italic;
-            color: #FFFFFF !important;
-            font-size: 1.7rem;
-            letter-spacing: 1.5px;
+            font-weight: 800;
+            color: #000000 !important;
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
         }
 
         .navbar-brand-tech {
             color: var(--brand-primary) !important;
-            text-shadow: 0 0 12px rgba(255, 0, 127, 0.7);
         }
 
         .navbar-custom .nav-link {
-            color: #FFFFFF;
+            color: #000000;
             font-weight: 500;
             margin-left: 1rem;
             transition: color 0.2s;
+            font-family: var(--font-heading);
         }
 
         .navbar-custom .nav-link:hover {
@@ -122,15 +122,16 @@
         }
 
         /* Botones Pro */
-        .btn-pink, .btn-primary {
+        .btn-pink, .btn-primary, .btn-brand {
             background: var(--brand-gradient) !important;
             color: #FFFFFF !important;
             font-weight: 700;
             border: none;
             transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 10px rgba(255, 0, 127, 0.25);
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.25);
+            font-family: var(--font-heading);
         }
-        .btn-pink:hover, .btn-primary:hover {
+        .btn-pink:hover, .btn-primary:hover, .btn-brand:hover {
             background: var(--brand-gradient-hover) !important;
             color: #FFFFFF !important;
             transform: translateY(-2px);
@@ -138,31 +139,33 @@
         }
 
         .btn-blue {
-            background-color: #0F172A !important;
+            background-color: #000000 !important;
             color: #FFFFFF !important;
             font-weight: 600;
-            border: 1px solid #0F172A;
+            border: 1px solid #000000;
             transition: all 0.2s ease-in-out;
+            font-family: var(--font-heading);
         }
         .btn-blue:hover {
-            background-color: #1E293B !important;
+            background-color: #212121 !important;
             color: #FFFFFF !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-outline-pink {
+        .btn-outline-pink, .btn-outline-brand {
             background-color: transparent;
             color: var(--brand-primary) !important;
             font-weight: 600;
             border: 1.5px solid var(--brand-primary);
             transition: all 0.2s ease-in-out;
+            font-family: var(--font-heading);
         }
-        .btn-outline-pink:hover {
+        .btn-outline-pink:hover, .btn-outline-brand:hover {
             background: var(--brand-gradient) !important;
             color: #FFFFFF !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+            box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
         }
 
         /* Superficies */
@@ -170,7 +173,7 @@
             background-color: #FFFFFF;
             border: 1px solid var(--brand-border);
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
             color: var(--brand-text);
         }
 
@@ -180,16 +183,18 @@
             border-radius: 12px;
             color: var(--brand-text);
             border-color: var(--brand-border);
+            font-family: var(--font-body);
         }
         .table-custom thead th, .table thead th {
-            background-color: #0F172A;
-            color: #FFFFFF;
-            border-bottom: 2px solid var(--brand-primary);
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+            border-bottom: 2px solid var(--brand-primary) !important;
             text-transform: uppercase;
             font-size: 0.78rem;
             letter-spacing: 0.5px;
             padding: 1rem;
             font-family: var(--font-heading);
+            font-weight: 700;
         }
         .table-custom tbody td, .table tbody td {
             padding: 1rem;
@@ -197,6 +202,10 @@
             border-bottom: 1px solid var(--brand-border);
             color: var(--brand-text);
             background-color: #FFFFFF;
+            font-family: var(--font-body);
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #FAFAFA;
         }
 
         /* Inputs y Formularios */
@@ -204,21 +213,22 @@
             background-color: #FFFFFF !important;
             border: 1px solid #CBD5E1 !important;
             color: var(--brand-text) !important;
+            font-family: var(--font-body);
         }
         .form-control:focus, .form-select:focus {
             border-color: var(--brand-primary) !important;
-            box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.15) !important;
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.18) !important;
             background-color: #FFFFFF !important;
             color: var(--brand-text) !important;
         }
         .input-group-text {
-            background-color: #F1F5F9 !important;
+            background-color: #F5F5F5 !important;
             border-color: #CBD5E1 !important;
             color: var(--brand-text) !important;
             font-weight: 600;
         }
 
-        /* Sidebar Offcanvas Estilos (Clean Light Mode ULTRA TECH) */
+        /* Sidebar Offcanvas Estilos (Clean Light Mode PUNTO CEL) */
         .offcanvas {
             background-color: #FFFFFF !important;
             color: var(--brand-text) !important;
@@ -226,34 +236,46 @@
             box-shadow: 4px 0 25px rgba(0, 0, 0, 0.08) !important;
         }
         .offcanvas-header {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+            background: #FFFFFF !important;
             border-bottom: 3px solid var(--brand-primary) !important;
+            padding: 1rem 1.25rem;
         }
         .offcanvas-title {
-            color: #FFFFFF !important;
+            color: #000000 !important;
             font-family: var(--font-heading);
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
         .offcanvas-header .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
+            filter: none;
         }
         .offcanvas-body .nav-link {
-            color: #1E293B !important;
+            color: #333333 !important;
             transition: all 0.2s ease-in-out;
             font-weight: 500;
+            font-family: var(--font-body);
         }
-        .offcanvas-body .fa-solid {
-            color: var(--brand-primary) !important;
+        .offcanvas-body .nav-link i,
+        .offcanvas-body .nav-link .fa-solid {
+            color: #4D4D4D;
+            transition: color 0.2s ease-in-out;
         }
-        .offcanvas-body .nav-link:hover {
-            background-color: rgba(255, 0, 127, 0.08);
+        .offcanvas-body .nav-link:hover,
+        .offcanvas-body .nav-link.active {
+            background-color: rgba(229, 57, 53, 0.08) !important;
             transform: translateX(4px);
-            border-left: 3px solid var(--brand-primary) !important;
+            border-left: 4px solid var(--brand-primary) !important;
             color: var(--brand-primary) !important;
         }
-        .offcanvas-body .border-bottom { border-bottom-color: #E2E8F0 !important; }
-        .offcanvas-body .bg-light { background-color: #F8F9FA !important; border-color: #E2E8F0 !important; color: var(--brand-text) !important; }
-        .offcanvas-body .text-muted { color: #64748B !important; }
+        .offcanvas-body .nav-link:hover i,
+        .offcanvas-body .nav-link:hover .fa-solid,
+        .offcanvas-body .nav-link.active i,
+        .offcanvas-body .nav-link.active .fa-solid {
+            color: var(--brand-primary) !important;
+        }
+        .offcanvas-body .border-bottom { border-bottom-color: #EEEEEE !important; }
+        .offcanvas-body .bg-light { background-color: #F5F5F5 !important; border-color: #E0E0E0 !important; color: var(--brand-text) !important; }
+        .offcanvas-body .text-muted { color: #666666 !important; }
 
         /* Reglas EXCLUSIVAS para móviles (<768px): el computador permanece 100% intacto */
         @media (max-width: 767.98px) {
@@ -286,7 +308,7 @@
     </style>
 </head>
 <body>
-    <!-- Navbar ULTRA TECH -->
+    <!-- Navbar PUNTO CEL -->
     <nav class="navbar navbar-custom mb-4 mb-md-5">
         <div class="container-fluid px-2 px-md-3 d-flex align-items-center justify-content-between">
             
@@ -294,7 +316,7 @@
             <div class="d-flex align-items-center" style="min-width: 44px;">
                 {% if current_user.is_authenticated %}
                 <button class="navbar-toggler border-0 shadow-none p-1 p-md-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" title="Menú">
-                    <i class="fa-solid fa-bars fs-3" style="color: var(--brand-primary); text-shadow: 0 0 8px rgba(255,0,127,0.6);"></i>
+                    <i class="fa-solid fa-bars fs-3" style="color: #000000;"></i>
                 </button>
                 {% else %}
                 <div style="width: 40px;"></div>
@@ -303,9 +325,10 @@
 
             <!-- Columna Centro: Brand Logo (Centrado natural flexible sin colisión) -->
             <div class="d-flex justify-content-center flex-grow-1 px-1 px-sm-2 text-center overflow-hidden">
-                <a class="navbar-brand d-inline-flex align-items-center fw-bold m-0 text-nowrap" href="{{ url_for('index') }}" style="letter-spacing: 1.5px; font-style: italic; font-size: clamp(1.1rem, 4vw, 1.55rem);">
-                    <span style="color: #FFFFFF; font-weight: 900;">ULTRA</span>
-                    <span class="navbar-brand-tech" style="color: var(--brand-primary); font-weight: 900; margin-left: 6px;">TECH</span>
+                <a class="navbar-brand d-inline-flex align-items-center fw-bold m-0 text-nowrap" href="{{ url_for('index') }}" style="letter-spacing: 0.5px; font-size: clamp(1.2rem, 4vw, 1.6rem);">
+                    <img src="{{ url_for('static', filename='img/puntocel.png') }}" alt="Punto Cel" class="me-2" style="width: 32px; height: 32px; object-fit: contain;">
+                    <span style="color: #000000; font-weight: 800;">PUNTO</span>
+                    <span class="navbar-brand-tech" style="color: var(--brand-primary); font-weight: 800; margin-left: 6px;">CEL</span>
                 </a>
             </div>
 
@@ -341,10 +364,13 @@
     {% if current_user.is_authenticated %}
     <!-- Offcanvas Menú Lateral (Sidebar) -->
     <div class="offcanvas offcanvas-start border-0 shadow" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 280px;">
-        <div class="offcanvas-header bg-brand-pink border-bottom">
-            <h5 class="offcanvas-title fw-bold text-brand-black" id="offcanvasNavbarLabel">
-                <i class="fa-solid fa-user-circle me-2"></i>{{ current_user.rol | capitalize }}
-            </h5>
+        <div class="offcanvas-header bg-white border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <img src="{{ url_for('static', filename='img/puntocel.png') }}" alt="Punto Cel" style="width: 28px; height: 28px; object-fit: contain;">
+                <h5 class="offcanvas-title fw-bold text-dark m-0" id="offcanvasNavbarLabel">
+                    <i class="fa-solid fa-user-circle me-1 text-danger"></i>{{ current_user.rol | capitalize }}
+                </h5>
+            </div>
             <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column p-0">
@@ -602,7 +628,7 @@
                     </div>
 
                     <!-- Monto Destacado -->
-                    <div class="card border-0 rounded-4 p-3 text-center mb-4 shadow-sm" style="border: 2px dashed #FF007F !important; background-color: #FFF0F5 !important;">
+                    <div class="card border-0 rounded-4 p-3 text-center mb-4 shadow-sm" style="border: 2px dashed #E53935 !important; background-color: #FFEBEE !important;">
                         <span class="text-uppercase text-muted fw-bold small">Valor de la Mensualidad</span>
                         <h2 class="fw-extrabold m-0" style="color: #059669; font-size: 2.2rem; font-family: var(--font-heading);">${{ pago_servidor.monto }} COP</h2>
                     </div>
@@ -978,7 +1004,7 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('[PWA] El usuario aceptó la instalación de ULTRA TECH');
+                        console.log('[PWA] El usuario aceptó la instalación de PUNTO CEL');
                     }
                     deferredPrompt = null;
                     const container = document.getElementById('pwa-install-container');
@@ -988,7 +1014,7 @@
         }
 
         window.addEventListener('appinstalled', () => {
-            console.log('[PWA] ULTRA TECH fue instalada satisfactoriamente');
+            console.log('[PWA] PUNTO CEL fue instalada satisfactoriamente');
             const container = document.getElementById('pwa-install-container');
             if (container) container.classList.add('d-none');
         });

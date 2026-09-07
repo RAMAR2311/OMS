@@ -1,14 +1,14 @@
 {
     "id": "/",
-    "name": "ULTRA TECH - CRM & POS",
-    "short_name": "ULTRA TECH",
-    "description": "Sistema integral de gestión de inventario, punto de venta y finanzas ULTRA TECH",
+    "name": "PUNTO CEL - CRM & POS",
+    "short_name": "PUNTO CEL",
+    "description": "Sistema integral de gestión de inventario, punto de venta y finanzas PUNTO CEL",
     "start_url": "/?source=pwa",
     "scope": "/",
     "display": "standalone",
     "orientation": "any",
     "background_color": "#FFFFFF",
-    "theme_color": "#FF007F",
+    "theme_color": "#E53935",
     "categories": [
         "business",
         "finance",

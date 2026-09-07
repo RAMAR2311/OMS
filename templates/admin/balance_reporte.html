@@ -4,11 +4,11 @@
 <div class="row justify-content-center">
     <!-- Navbar y Botones de Opción -->
     <div class="col-12 d-print-none mb-4">
-         <div class="card card-custom p-4 border-0 shadow-sm d-flex justify-content-between align-items-center flex-row" style="background-color: #FFFFFF; border: 1px solid #E2E8F0 !important;">
-             <h4 class="fw-bold m-0 font-orbitron" style="color: #0F172A;">
-                 <i class="fa-solid fa-scale-balanced me-2" style="color: #FF007F;"></i> Balance Financiero Operativo
+         <div class="card card-custom p-4 border-0 shadow-sm d-flex justify-content-between align-items-center flex-row" style="background-color: #FFFFFF; border: 1px solid #E0E0E0 !important;">
+             <h4 class="fw-bold m-0" style="color: #000000; font-family: var(--font-heading);">
+                 <i class="fa-solid fa-scale-balanced me-2" style="color: #E53935;"></i> Balance Financiero Operativo
              </h4>
-             <button onclick="window.print()" class="btn btn-pink rounded-pill fw-bold text-white px-4 shadow-sm" style="letter-spacing: 0.5px;">
+             <button onclick="window.print()" class="btn btn-primary rounded-pill fw-bold text-white px-4 shadow-sm" style="background: var(--brand-gradient) !important; letter-spacing: 0.5px; font-family: var(--font-heading);">
                  <i class="fa-solid fa-file-pdf me-1"></i> Imprimir Reporte Oficial
              </button>
          </div>
@@ -16,26 +16,26 @@
 
     <!-- Contenido del Reporte -->
     <div class="col-12 col-xl-10 report-container">
-        <div class="card p-4 p-md-5 border-0 shadow-sm rounded-4 printable-document" style="background-color: #FFFFFF; border: 1px solid #E2E8F0 !important; color: #0F172A;">
+        <div class="card p-4 p-md-5 border-0 shadow-sm rounded-4 printable-document" style="background-color: #FFFFFF; border: 1px solid #E0E0E0 !important; color: #000000;">
             
-            <!-- Cabecera Oficial ULTRA TECH -->
-            <div class="text-center mb-5 pb-4 border-bottom d-print-block" style="border-color: #E2E8F0 !important;">
-                <div class="display-6 fw-bold font-orbitron mb-1" style="letter-spacing: 1.5px; font-style: italic;">
-                    <span style="color: #0F172A;">ULTRA</span>
-                    <span style="color: #FF007F; text-shadow: 0 0 12px rgba(255,0,127,0.4);">TECH</span>
+            <!-- Cabecera Oficial PUNTO CEL -->
+            <div class="text-center mb-5 pb-4 border-bottom d-print-block" style="border-color: #E0E0E0 !important;">
+                <div class="display-6 fw-bold mb-1" style="font-family: var(--font-heading); letter-spacing: 0.5px;">
+                    <span style="color: #000000; font-weight: 800;">PUNTO</span>
+                    <span style="color: #E53935; font-weight: 800;">CEL</span>
                 </div>
-                <div class="small fw-semibold text-muted text-uppercase mb-2" style="letter-spacing: 1.5px;">
-                    DE ACCESORIOS DE TELÉFONO • POS ERP
+                <div class="small fw-semibold text-uppercase mb-2" style="letter-spacing: 1.2px; font-family: var(--font-heading); color: #E53935;">
+                    INNOVACIÓN MÓVIL • POS & GESTIÓN COMERCIAL
                 </div>
-                <h4 class="text-dark fw-bold mb-2 font-orbitron">ESTADO DE RESULTADOS CONTABLE</h4>
-                <p class="mb-0 text-muted small">
+                <h4 class="text-dark fw-bold mb-2" style="font-family: var(--font-heading);">ESTADO DE RESULTADOS CONTABLE</h4>
+                <p class="mb-0 text-muted small" style="font-family: var(--font-body);">
                     Período Auditado: <strong class="text-dark">{{ fecha_inicio }}</strong> hasta <strong class="text-dark">{{ fecha_fin }}</strong><br>
                     Generado por sistema el: <strong class="text-dark">{{ fecha_generacion }}</strong>
                 </p>
             </div>
 
             <!-- Sección 1: Ingresos -->
-            <h5 class="fw-bold mb-3 border-bottom pb-2 font-orbitron text-success" style="border-color: #E2E8F0 !important;">
+            <h5 class="fw-bold mb-3 border-bottom pb-2 text-success" style="border-color: #E0E0E0 !important; font-family: var(--font-heading);">
                 <i class="fa-solid fa-arrow-trend-up me-2"></i> 1. INGRESOS EN BRUTO
             </h5>
             <div class="table-responsive mb-5">
@@ -56,15 +56,15 @@
                             <td class="text-end text-dark fw-bold">${{ (datos.ventas_transferencia)|cop }}</td>
                         </tr>
                         <tr class="table-summary-row">
-                            <td class="p-3 fw-bold font-orbitron text-dark">Σ TOTAL INGRESOS (VENTAS)</td>
-                            <td class="text-end p-3 fw-bold fs-5 font-orbitron text-success">${{ (datos.total_ingresos)|cop }}</td>
+                            <td class="p-3 fw-bold text-dark" style="font-family: var(--font-heading);">Σ TOTAL INGRESOS (VENTAS)</td>
+                            <td class="text-end p-3 fw-bold fs-5 text-success" style="font-family: var(--font-heading);">${{ (datos.total_ingresos)|cop }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- Sección 2: Costos y Gastos -->
-            <h5 class="fw-bold mb-3 border-bottom pb-2 font-orbitron text-danger" style="border-color: #E2E8F0 !important;">
+            <h5 class="fw-bold mb-3 border-bottom pb-2 text-danger" style="border-color: #E0E0E0 !important; font-family: var(--font-heading);">
                 <i class="fa-solid fa-arrow-trend-down me-2"></i> 2. COSTOS DE MERCANCÍA Y GASTOS
             </h5>
             <div class="table-responsive mb-5">
@@ -89,30 +89,30 @@
                             <td class="text-end fw-bold text-danger">-${{ (datos.costos_indirectos)|cop }}</td>
                         </tr>
                         <tr class="table-summary-row">
-                            <td class="p-3 fw-bold font-orbitron text-dark">Σ TOTAL SALIDAS Y DEDUCCIONES</td>
-                            <td class="text-end p-3 fw-bold fs-5 font-orbitron text-danger">-${{ (datos.total_salidas)|cop }}</td>
+                            <td class="p-3 fw-bold text-dark" style="font-family: var(--font-heading);">Σ TOTAL SALIDAS Y DEDUCCIONES</td>
+                            <td class="text-end p-3 fw-bold fs-5 text-danger" style="font-family: var(--font-heading);">-${{ (datos.total_salidas)|cop }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- Sección 3: Balance Neto de Resultados -->
-            <h5 class="fw-bold mb-3 border-bottom pb-2 font-orbitron text-dark" style="border-color: #E2E8F0 !important;">
-                <i class="fa-solid fa-sack-dollar me-2" style="color: #FF007F;"></i> 3. RENDIMIENTO NETO PERIÓDICO
+            <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark" style="border-color: #E0E0E0 !important; font-family: var(--font-heading);">
+                <i class="fa-solid fa-sack-dollar me-2" style="color: #E53935;"></i> 3. RENDIMIENTO NETO PERIÓDICO
             </h5>
             {% set balance_positivo = datos.balance_neto >= 0 %}
             <div class="card p-4 text-center border-0 my-4 rounded-4 {{ 'balance-card-positive' if balance_positivo else 'balance-card-negative' }}">
-                <small class="text-uppercase fw-bold mb-1 font-orbitron {{ 'text-success' if balance_positivo else 'text-danger' }}" style="letter-spacing: 1px;">
+                <small class="text-uppercase fw-bold mb-1 {{ 'text-success' if balance_positivo else 'text-danger' }}" style="letter-spacing: 1px; font-family: var(--font-heading);">
                     {% if balance_positivo %}Ganancia Neta / Utilidad del Ejercicio{% else %}Pérdida Neta Registrada{% endif %}
                 </small>
-                <h1 class="fw-bolder mb-0 font-orbitron {{ 'text-positive' if balance_positivo else 'text-negative' }}" style="font-size: 3rem;">
+                <h1 class="fw-bolder mb-0 {{ 'text-positive' if balance_positivo else 'text-negative' }}" style="font-size: 3rem; font-family: var(--font-heading);">
                     ${{ (datos.balance_neto)|cop }}
                 </h1>
             </div>
 
             <!-- Sección 4: Bodega y Cartera Mayorista (B2B) -->
-            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-5 font-orbitron" style="color: #FF007F; border-color: #E2E8F0 !important;">
-                <i class="fa-solid fa-boxes-stacked me-2"></i> 4. BODEGA Y CARTERA MAYORISTA (B2B)
+            <h5 class="fw-bold mb-3 border-bottom pb-2 mt-5" style="color: #000000; border-color: #E0E0E0 !important; font-family: var(--font-heading);">
+                <i class="fa-solid fa-boxes-stacked me-2" style="color: #E53935;"></i> 4. BODEGA Y CARTERA MAYORISTA (B2B)
             </h5>
             <div class="table-responsive mb-4">
                 <table class="table table-financial mb-0">
@@ -129,11 +129,11 @@
                         </tr>
                         <tr>
                             <td class="text-dark fw-medium">Total Recaudado por Abonos en Bodega (Recuperación de Cartera)</td>
-                            <td class="text-end fw-bold" style="color: #FF007F;">${{ (datos.bodega_abonos)|cop }}</td>
+                            <td class="text-end fw-bold" style="color: #E53935;">${{ (datos.bodega_abonos)|cop }}</td>
                         </tr>
                         <tr class="table-summary-row">
-                            <td class="p-3 fw-bold font-orbitron text-dark">Σ CARTERA TOTAL ABIERTA EN LA CALLE (POR COBRAR)</td>
-                            <td class="text-end p-3 fw-bold fs-5 font-orbitron text-warning" style="color: #d97706 !important;">${{ (datos.bodega_cartera_pendiente)|cop }}</td>
+                            <td class="p-3 fw-bold text-dark" style="font-family: var(--font-heading);">Σ CARTERA TOTAL ABIERTA EN LA CALLE (POR COBRAR)</td>
+                            <td class="text-end p-3 fw-bold fs-5 text-warning" style="color: #d97706 !important; font-family: var(--font-heading);">${{ (datos.bodega_cartera_pendiente)|cop }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -143,9 +143,9 @@
             <div class="row mt-5 pt-5 d-none d-print-flex">
                 <div class="col-8 mx-auto text-center mt-5">
                     <hr class="w-100 border-dark border-1 opacity-100">
-                    <p class="mb-0 fw-bold">Verificado y Autorizado</p>
+                    <p class="mb-0 fw-bold" style="font-family: var(--font-heading);">Verificado y Autorizado</p>
                     <p class="text-muted small mb-0">{{ current_user.nombre }}</p>
-                    <p class="text-muted" style="font-size: 0.7rem;">Administración General • ULTRA TECH</p>
+                    <p class="text-muted" style="font-size: 0.75rem;">Administración General • PUNTO CEL</p>
                 </div>
             </div>
 
@@ -179,36 +179,47 @@
     background-color: #FFFFFF !important;
     border-radius: 12px;
     overflow: hidden;
-    color: #0F172A;
-    border: 1px solid #E2E8F0;
+    color: #000000;
+    border: 1px solid #E0E0E0;
+    font-family: var(--font-body);
 }
 
 .table-financial thead th {
-    background-color: #0F172A !important;
+    background-color: #000000 !important;
     color: #FFFFFF !important;
-    border-bottom: 2px solid #FF007F !important;
+    border-bottom: 3px solid #E53935 !important;
     text-transform: uppercase;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     letter-spacing: 0.8px;
     padding: 0.9rem 1rem;
     font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.table-financial tbody tr:nth-of-type(odd) td {
+    background-color: #FFFFFF !important;
+}
+
+.table-financial tbody tr:nth-of-type(even) td {
+    background-color: #FAFAFA !important;
 }
 
 .table-financial tbody td {
     padding: 0.9rem 1rem;
-    border-bottom: 1px solid #E2E8F0 !important;
-    color: #0F172A !important;
-    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #EEEEEE !important;
+    color: #000000 !important;
+    font-family: var(--font-body);
 }
 
 .table-financial tbody tr:hover td {
-    background-color: #F8FAFC !important;
+    background-color: #F5F5F5 !important;
 }
 
 .table-summary-row td {
-    background-color: #F1F5F9 !important;
+    background-color: #F5F5F5 !important;
     border-top: 2px solid #CBD5E1 !important;
     border-bottom: 2px solid #CBD5E1 !important;
+    font-weight: 700;
 }
 
 /* ====== Estilos Exclusivos para PDF/Impresión del Reporte Financiero ====== */
@@ -251,16 +262,21 @@
     }
     .table-financial thead th {
         background-color: #000000 !important;
-        color: #FF007F !important;
-        border-bottom: 2px solid #000000 !important;
+        color: #FFFFFF !important;
+        border-bottom: 2px solid #E53935 !important;
+    }
+    .table-financial tbody tr:nth-of-type(odd) td {
+        background-color: #FFFFFF !important;
+    }
+    .table-financial tbody tr:nth-of-type(even) td {
+        background-color: #F8F8F8 !important;
     }
     .table-financial tbody td {
-        background-color: #FFFFFF !important;
         color: #000000 !important;
         border-bottom: 1px solid #DDDDDD !important;
     }
     .table-summary-row td {
-        background-color: #F8F9FA !important;
+        background-color: #F5F5F5 !important;
         color: #000000 !important;
     }
 
