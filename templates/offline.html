@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PUNTO CEL - Sin Conexión</title>
+    <title>OMC - Sin Conexión</title>
     <link rel="icon" type="image/png" href="/static/img/icons/icon-192x192.png">
-    <meta name="theme-color" content="#E53935">
-    <!-- Google Fonts: Montserrat & Roboto -->
+    <meta name="theme-color" content="#007BFF">
+    <!-- Google Fonts: Orbitron, Montserrat & Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Montserrat:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --brand-bg: #F5F5F5;
+            --brand-bg: #FFFFFF;
             --brand-white: #FFFFFF;
-            --brand-primary: #E53935;
-            --brand-secondary: #990000;
+            --brand-primary: #007BFF;
+            --brand-secondary: #0056B3;
             --brand-text: #000000;
-            --brand-muted: #4D4D4D;
-            --brand-border: #E0E0E0;
-            --brand-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --brand-muted: #4B5563;
+            --brand-border: #E5E7EB;
+            --brand-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
 
         * {
@@ -67,7 +67,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: #FFF1F7;
+            background: rgba(0, 123, 255, 0.08);
             color: var(--brand-primary);
             padding: 0.4rem 1rem;
             border-radius: 999px;
@@ -76,20 +76,21 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 123, 255, 0.2);
         }
 
         .icon-container {
             width: 84px;
             height: 84px;
             border-radius: 50%;
-            background: #FFF1F7;
+            background: rgba(0, 123, 255, 0.08);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 1.5rem;
             color: var(--brand-primary);
             font-size: 2.25rem;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.18);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.15);
         }
 
         h1 {
@@ -122,12 +123,12 @@
             align-items: center;
             gap: 0.5rem;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.25);
         }
 
         .btn-retry:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(255, 0, 127, 0.35);
+            box-shadow: 0 6px 18px rgba(0, 123, 255, 0.35);
         }
 
         .status-pill {
@@ -157,15 +158,18 @@
 </head>
 <body>
     <div class="offline-card">
+        <div class="mb-3">
+            <img src="/static/img/icons/icon-192x192.png" alt="OMC Logo" style="width: 72px; height: 72px; object-fit: contain; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 4px; border: 1px solid #E5E7EB; background: #FFFFFF;">
+        </div>
         <div class="brand-badge">
-            <i class="fas fa-bolt"></i> PUNTO CEL PWA
+            <i class="fas fa-bolt"></i> OMC POS
         </div>
         <div class="icon-container">
             <i class="fas fa-wifi-slash"></i>
         </div>
         <h1>Sin Conexión a Internet</h1>
         <p>
-            No pudimos sincronizar con el servidor de PUNTO CEL. Por favor verifica tu conexión Wi-Fi o datos móviles.
+            No pudimos sincronizar con el servidor de OMC. Por favor verifica tu conexión Wi-Fi o datos móviles.
         </p>
         <button class="btn-retry" onclick="window.location.reload();">
             <i class="fas fa-rotate-right"></i> Reintentar Conexión

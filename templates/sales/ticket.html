@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket de Compra #{{ venta.id }} - PUNTO CEL</title>
+    <title>Ticket de Compra #{{ venta.id }} - OMC</title>
     <!-- Open Graph Meta Tags para Previsualización Rica en WhatsApp / Redes Sociales -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="PUNTO CEL - Recibo Digital #{{ venta.id }}">
-    <meta property="og:description" content="Comprobante de compra oficial de PUNTO CEL. Total: ${{ (venta.monto_total)|cop }} COP">
+    <meta property="og:title" content="OMC - Recibo Digital #{{ venta.id }}">
+    <meta property="og:description" content="Comprobante de compra oficial de OMC Accesorios. Total: ${{ (venta.monto_total)|cop }} COP">
     <meta property="og:image" content="{{ url_for('static', filename='img/icons/icon-512x512.png', _external=True) }}">
     <meta property="og:url" content="{{ request.url }}">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=5">
-    <!-- Google Fonts: Montserrat y Roboto -->
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=7">
+    <!-- Google Fonts: Orbitron, Montserrat y Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;600;700&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;600;700&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- html2canvas para generación de imagen nítida del ticket -->
@@ -23,11 +23,11 @@
     <style>
         /* =========================================================
            TICKET DIGITAL (VISTA PANTALLA / NAVEGADOR / PDF)
-           Paleta Oficial PUNTO CEL: Fondo Blanco #FFFFFF / #F5F5F5,
-           Texto Negro #000000, Acentos Rojo Intenso #E53935
+           Paleta Oficial OMC: Fondo Blanco #FFFFFF,
+           Texto Negro #000000, Acentos Azul Eléctrico #007BFF
            ========================================================= */
         body {
-            background-color: #F5F5F5;
+            background-color: #F8F9FA;
             margin: 0;
             padding: 30px;
             display: flex;
@@ -41,34 +41,34 @@
             width: 100%;
             max-width: 380px; /* Ancho estándar de impresora térmica 80mm */
             padding: 25px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06), 0 0 20px rgba(229, 57, 53, 0.12);
-            border: 1px solid #E0E0E0;
-            border-top: 4px solid #E53935;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 0 20px rgba(0, 123, 255, 0.08);
+            border: 1px solid #E5E7EB;
+            border-top: 4px solid #007BFF;
             border-radius: 12px;
             box-sizing: border-box;
         }
 
         .header {
             text-align: center;
-            border-bottom: 2px dashed #E53935;
+            border-bottom: 2px dashed #007BFF;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
 
         .logo {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.9rem;
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-size: 2.1rem;
             font-weight: 900;
             margin: 0 0 4px 0;
-            letter-spacing: 0.5px;
+            letter-spacing: 2px;
             color: #000000;
         }
 
         .subtitle-brand {
             font-size: 0.75rem;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.5px;
             font-weight: 700;
-            color: #E53935;
+            color: #007BFF;
             margin-bottom: 12px;
             text-transform: uppercase;
             font-family: 'Montserrat', sans-serif;
@@ -78,7 +78,7 @@
             font-size: 0.85rem;
             margin: 3px 0;
             line-height: 1.4;
-            color: #333333;
+            color: #1F2937;
             font-family: 'Roboto', sans-serif;
         }
 
@@ -92,8 +92,8 @@
 
         .table-items th {
             text-align: left;
-            border-bottom: 2px solid #E53935;
-            color: #E53935;
+            border-bottom: 2px solid #007BFF;
+            color: #007BFF;
             padding-bottom: 8px;
             font-weight: 700;
             font-size: 0.78rem;
@@ -104,7 +104,7 @@
         .table-items td {
             padding: 10px 0;
             vertical-align: top;
-            border-bottom: 1px solid #EEEEEE;
+            border-bottom: 1px solid #E5E7EB;
             color: #000000;
             font-family: 'Roboto', sans-serif;
         }
@@ -114,7 +114,7 @@
         .col-sub { width: 30%; text-align: right; font-family: 'Roboto Mono', monospace; font-weight: 700; }
 
         .totals {
-            border-top: 2px dashed #E53935;
+            border-top: 2px dashed #007BFF;
             padding-top: 20px;
             margin-bottom: 25px;
         }
@@ -125,12 +125,12 @@
             align-items: center;
             font-size: 1.35rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #E53935 0%, #990000 100%);
+            background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
             color: #FFFFFF;
             padding: 12px 16px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
-            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
+            font-family: 'Orbitron', 'Montserrat', sans-serif;
             letter-spacing: 0.5px;
         }
 
@@ -147,7 +147,7 @@
             display: block;
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #E53935 0%, #990000 100%);
+            background: linear-gradient(135deg, #007BFF 0%, #0056B3 100%);
             color: #FFFFFF;
             border: none;
             font-size: 1rem;
@@ -158,12 +158,12 @@
             cursor: pointer;
             margin-top: 25px;
             transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.25);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
         }
 
         .btn-print:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(229, 57, 53, 0.45);
+            box-shadow: 0 6px 22px rgba(0, 123, 255, 0.45);
         }
 
         .btn-whatsapp {
@@ -338,10 +338,9 @@
 <div class="ticket">
     <div class="header">
         <h1 class="logo">
-            <span style="color: #000000;">PUNTO</span>
-            <span style="color: #E53935;">CEL</span>
+            <span style="color: #000000; font-family: 'Orbitron', 'Montserrat', sans-serif; font-weight: 900; letter-spacing: 2px;">OMC</span>
         </h1>
-        <div class="subtitle-brand">Punto Cel - Innovación Móvil</div>
+        <div class="subtitle-brand">OMC - ACCESORIOS PARA CELULARES</div>
         
         <p class="info">Folio / Ticket: #{{ venta.id }}</p>
         <p class="info">Expedido: {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</p>
@@ -414,7 +413,7 @@
     <div class="footer">
         <p style="font-size: 0.95rem; font-weight: bold; color: #000000; margin-bottom: 6px; font-family: 'Montserrat', sans-serif;">¡Gracias por tu compra!</p>
         <p style="margin-bottom: 4px;">Políticas de Tienda: Devoluciones únicamente presentando ticket impreso o digital.</p>
-        <p>Soporte: ventas@puntocel.com</p>
+        <p>Soporte: ventas@omc.com</p>
     </div>
 
     <button class="btn-print" type="button" onclick="window.print()">
@@ -448,26 +447,23 @@
         <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #333333; margin-bottom: 6px; font-family: 'Montserrat', sans-serif;">
             Nombre del Cliente (Opcional)
         </label>
-        <input type="text" id="waNombreCliente" placeholder="Ej: Johan Alvarez" 
-               style="width: 100%; padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #000000; outline: none; box-sizing: border-box; margin-bottom: 12px; font-family: 'Roboto', sans-serif;">
+        <input type="text" id="waNombreClienteInput" placeholder="Ej. Carlos Mendoza" style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.95rem; margin-bottom: 14px; box-sizing: border-box; font-family: 'Roboto', sans-serif;">
 
         <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #333333; margin-bottom: 6px; font-family: 'Montserrat', sans-serif;">
-            Número Celular de WhatsApp
+            Número Celular / WhatsApp
         </label>
-        
         <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <span style="display: flex; align-items: center; padding: 0 12px; background: #F5F5F5; border: 1px solid #CBD5E1; border-radius: 8px; font-weight: 700; font-size: 0.9rem; color: #000000;">
-                🇨🇴 +57
-            </span>
-            <input type="tel" id="waNumeroInput" placeholder="Ej: 311 564 3557" maxlength="15" 
-                   style="flex: 1; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 1.05rem; font-weight: 600; color: #000000; outline: none; box-sizing: border-box; font-family: 'Roboto', sans-serif;"
-                   onkeydown="if(event.key === 'Enter') enviarWhatsAppConImagen();">
+            <span style="display: flex; align-items: center; padding: 10px 12px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; font-weight: 700; font-size: 0.9rem; color: #475569;">+57</span>
+            <input type="tel" id="waNumeroInput" placeholder="3001234567" maxlength="10" style="flex: 1; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 1rem; font-weight: 600; letter-spacing: 0.5px; box-sizing: border-box; font-family: 'Roboto Mono', monospace;">
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button type="button" id="btnEnviarWA" onclick="enviarWhatsAppConImagen()" 
-                    style="width: 100%; padding: 13px; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #FFFFFF; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35); font-family: 'Montserrat', sans-serif;">
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i> Enviar Factura Digital a WhatsApp
+        <button type="button" onclick="ejecutarEnvioWhatsApp()" style="width: 100%; padding: 13px; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #FFFFFF; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Montserrat', sans-serif; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); text-transform: uppercase;">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Enviar Factura Digital
+        </button>
+
+        <div style="margin-top: 12px; text-align: center;">
+            <button type="button" onclick="enviarWhatsAppSoloTexto()" style="background: none; border: none; color: #64748B; font-size: 0.78rem; text-decoration: underline; cursor: pointer;">
+                O enviar únicamente resumen en texto simple
             </button>
         </div>
     </div>
@@ -477,31 +473,9 @@
 <script>
     const SALE_ID = "{{ venta.id }}";
 
-    window.onload = function() {
-        setTimeout(() => {
-            window.print();
-        }, 700);
-    };
-
-    function abrirModalWhatsApp() {
-        const modal = document.getElementById('modalWhatsApp');
-        modal.style.display = 'flex';
-        const input = document.getElementById('waNumeroInput');
-        setTimeout(() => input.focus(), 50);
-    }
-
-    function cerrarModalWhatsApp() {
-        document.getElementById('modalWhatsApp').style.display = 'none';
-        const loading = document.getElementById('waLoadingIndicator');
-        if (loading) loading.style.display = 'none';
-    }
-
-    // Función auxiliar para capturar el ticket como imagen PNG
     async function generarCanvasTicket() {
         const ticket = document.querySelector('.ticket');
         const botones = ticket.querySelectorAll('.btn-print, .btn-whatsapp, .btn-download');
-        
-        // Ocultar temporalmente los botones de acción para la captura
         botones.forEach(b => b.style.display = 'none');
 
         try {
@@ -519,12 +493,11 @@
         }
     }
 
-    // Descarga directa del archivo de imagen
     async function descargarImagenDirecta() {
         try {
             const canvas = await generarCanvasTicket();
             const link = document.createElement('a');
-            link.download = `Factura_PuntoCel_${SALE_ID}.png`;
+            link.download = `Factura_OMC_${SALE_ID}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         } catch (e) {
@@ -532,16 +505,33 @@
         }
     }
 
-    // Envío del Recibo Digital por WhatsApp con Enlace Directo y Tarjeta Interactiva
-    function enviarWhatsAppConImagen() {
+    function abrirModalWhatsApp() {
+        const modal = document.getElementById('modalWhatsApp');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                const input = document.getElementById('waNumeroInput');
+                if (input) input.focus();
+            }, 100);
+        }
+    }
+
+    function cerrarModalWhatsApp() {
+        const modal = document.getElementById('modalWhatsApp');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    function ejecutarEnvioWhatsApp() {
         const inputNum = document.getElementById('waNumeroInput');
-        const inputNombre = document.getElementById('waNombreCliente');
+        const inputNombre = document.getElementById('waNombreClienteInput');
+        
         let raw = inputNum ? inputNum.value.replace(/\D/g, '') : '';
         let nombre = inputNombre ? inputNombre.value.trim() : '';
         
         if (!raw) {
             alert('Por favor ingresa el número celular del cliente.');
-            if (inputNum) inputNum.focus();
             return;
         }
 
@@ -549,15 +539,13 @@
             raw = '57' + raw;
         }
 
-        // URL absoluta del recibo digital
         const enlaceRecibo = `${window.location.origin}/sales/recibo/${SALE_ID}`;
 
-        // Construcción del mensaje estandarizado para Punto Cel
         let mensaje;
         if (nombre) {
-            mensaje = `Hola ${nombre}! Aquí tienes tu factura digital de PUNTO CEL: ${enlaceRecibo}`;
+            mensaje = `Hola ${nombre}! Aquí tienes tu factura digital de OMC - Accesorios: ${enlaceRecibo}`;
         } else {
-            mensaje = `Hola! Aquí tienes tu factura digital de PUNTO CEL: ${enlaceRecibo}`;
+            mensaje = `Hola! Aquí tienes tu factura digital de OMC - Accesorios: ${enlaceRecibo}`;
         }
 
         const url = `https://wa.me/${raw}?text=${encodeURIComponent(mensaje)}`;
@@ -566,7 +554,7 @@
     }
 
     // Texto limpio garantizado sin caracteres conflictivos
-    const mensajeTextoLimpio = `*PUNTO CEL - COMPROBANTE DE COMPRA*
+    const mensajeTextoLimpio = `*OMC - ACCESORIOS PARA CELULARES*
 *Folio / Ticket:* #{{ venta.id }}
 *Expedido:* {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}
 *Cajero:* {{ venta.vendedor.nombre }}
@@ -583,9 +571,9 @@ _Desglose:_
 {% for pago in venta.pagos %}  * {{ pago.metodo_pago|capitalize }}: ${{ (pago.monto)|cop }}
 {% endfor %}
 {% endif %}
-Gracias por tu compra en PUNTO CEL.
+Gracias por tu compra en OMC Accesorios.
 Politicas: Devoluciones unicamente con ticket impreso o digital.
-Soporte: ventas@puntocel.com`;
+Soporte: ventas@omc.com`;
 
     function enviarWhatsAppSoloTexto() {
         const input = document.getElementById('waNumeroInput');

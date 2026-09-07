@@ -1,14 +1,14 @@
 {
     "id": "/",
-    "name": "PUNTO CEL - CRM & POS",
-    "short_name": "PUNTO CEL",
-    "description": "Sistema integral de gestión de inventario, punto de venta y finanzas PUNTO CEL",
+    "name": "OMC - CRM & POS",
+    "short_name": "OMC",
+    "description": "Sistema integral de gestión de inventario, punto de venta y finanzas OMC Accesorios",
     "start_url": "/?source=pwa",
     "scope": "/",
     "display": "standalone",
     "orientation": "any",
     "background_color": "#FFFFFF",
-    "theme_color": "#E53935",
+    "theme_color": "#007BFF",
     "categories": [
         "business",
         "finance",
