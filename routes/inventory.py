@@ -11,9 +11,9 @@ inventory_bp = Blueprint('inventory_bp', __name__)
 
 @inventory_bp.route('/', methods=['GET'])
 @login_required
-@admin_or_bodega_required
+@admin_required
 def index():
-    tipo = 'bodega' if current_user.rol == 'bodega' else 'tienda'
+    tipo = 'tienda'
     page = request.args.get('page', 1, type=int)
     q = request.args.get('q', '').strip()
     per_page = 20

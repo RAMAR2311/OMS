@@ -36,33 +36,40 @@
     .tirilla-scroll {
         max-height: 48vh;
         overflow-y: auto;
-        border-radius: 12px;
-        border: 1px solid #edf2f7;
+        border-radius: 0;
+        border: none;
     }
     .tirilla-scroll thead th {
         position: sticky;
         top: 0;
-        background-color: #f8fafc;
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
         z-index: 5;
         font-size: 0.78rem;
         letter-spacing: 0.5px;
+        padding: 0.75rem 1rem;
+        font-family: var(--font-heading);
+        font-weight: 700;
     }
 
     /* Badges de métodos de pago */
     .badge-pago-efectivo {
-        background-color: #dcfce7;
-        color: #15803d;
-        border: 1px solid #bbf7d0;
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #86efac !important;
+        font-weight: 600 !important;
     }
     .badge-pago-digital {
-        background-color: #e0f2fe;
-        color: #0369a1;
-        border: 1px solid #bae6fd;
+        background-color: #e0f2fe !important;
+        color: #0369a1 !important;
+        border: 1px solid #7dd3fc !important;
+        font-weight: 600 !important;
     }
     .badge-pago-mixto {
-        background-color: #fef3c7;
-        color: #b45309;
-        border: 1px solid #fde68a;
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fcd34d !important;
+        font-weight: 600 !important;
     }
 
     /* Columna Derecha Sticky */
@@ -311,7 +318,7 @@
                 <div class="tirilla-scroll p-0">
                     <table class="table table-hover align-middle mb-0">
                         <thead>
-                            <tr class="text-secondary">
+                            <tr class="border-0">
                                 <th class="ps-3 py-2">TICKET</th>
                                 <th>HORA</th>
                                 <th>MEDIO DE PAGO</th>
@@ -332,16 +339,16 @@
                                     {% if v.pagos and v.pagos|length == 1 %}
                                         {% set pago = v.pagos[0] %}
                                         {% if pago.metodo_pago|lower == 'efectivo' %}
-                                            <span class="badge badge-pago-efectivo rounded-pill px-2 py-1 small">
-                                                <i class="fa-solid fa-money-bill-wave me-1"></i> Efectivo
+                                            <span class="badge rounded-pill px-3 py-2 fw-bold" style="background-color: #E8F5E9 !important; color: #1B5E20 !important; border: 1px solid #A5D6A7 !important; font-size: 0.82rem;">
+                                                <i class="fa-solid fa-money-bill-wave me-1 text-success"></i> Efectivo
                                             </span>
                                         {% else %}
-                                            <span class="badge badge-pago-digital rounded-pill px-2 py-1 small">
-                                                <i class="fa-solid fa-mobile-screen-button me-1"></i> {{ pago.metodo_pago|title }}
+                                            <span class="badge rounded-pill px-3 py-2 fw-bold" style="background-color: #E3F2FD !important; color: #0D47A1 !important; border: 1px solid #90CAF9 !important; font-size: 0.82rem;">
+                                                <i class="fa-solid fa-mobile-screen-button me-1 text-primary"></i> {{ pago.metodo_pago|title }}
                                             </span>
                                         {% endif %}
                                     {% elif v.pagos and v.pagos|length > 1 %}
-                                        <span class="badge badge-pago-mixto rounded-pill px-2 py-1 small mb-1">
+                                        <span class="badge rounded-pill px-3 py-2 fw-bold mb-1" style="background-color: #FFF8E1 !important; color: #E65100 !important; border: 1px solid #FFE082 !important; font-size: 0.82rem;">
                                             <i class="fa-solid fa-arrows-split-up-and-left me-1"></i> Mixto ({{ v.pagos|length }})
                                         </span>
                                         <div class="small text-muted" style="font-size: 0.72rem;">
@@ -351,12 +358,12 @@
                                         </div>
                                     {% else %}
                                         {% if (v.metodo_pago or 'efectivo')|lower == 'efectivo' %}
-                                            <span class="badge badge-pago-efectivo rounded-pill px-2 py-1 small">
-                                                <i class="fa-solid fa-money-bill-wave me-1"></i> Efectivo
+                                            <span class="badge rounded-pill px-3 py-2 fw-bold" style="background-color: #E8F5E9 !important; color: #1B5E20 !important; border: 1px solid #A5D6A7 !important; font-size: 0.82rem;">
+                                                <i class="fa-solid fa-money-bill-wave me-1 text-success"></i> Efectivo
                                             </span>
                                         {% else %}
-                                            <span class="badge badge-pago-digital rounded-pill px-2 py-1 small">
-                                                <i class="fa-solid fa-mobile-screen-button me-1"></i> {{ v.metodo_pago|title }}
+                                            <span class="badge rounded-pill px-3 py-2 fw-bold" style="background-color: #E3F2FD !important; color: #0D47A1 !important; border: 1px solid #90CAF9 !important; font-size: 0.82rem;">
+                                                <i class="fa-solid fa-mobile-screen-button me-1 text-primary"></i> {{ (v.metodo_pago or 'Digital')|title }}
                                             </span>
                                         {% endif %}
                                     {% endif %}
@@ -364,9 +371,9 @@
                                 <td>
                                     <ul class="list-unstyled mb-0" style="font-size: 0.82rem;">
                                         {% for det in v.detalles %}
-                                        <li class="text-truncate" style="max-width: 250px;">
-                                            <span class="fw-bold text-dark">{{ det.cantidad }}x</span> 
-                                            {{ det.nombre_manual if det.nombre_manual else (det.producto.nombre if det.producto else 'Item') }}
+                                        <li class="text-truncate" style="max-width: 280px;">
+                                            <span class="fw-bold text-dark">{{ det.cantidad_vendida if det.cantidad_vendida is defined and det.cantidad_vendida is not none else (det.cantidad if det.cantidad is defined else 1) }}x</span> 
+                                            {{ det.nombre_manual if det.nombre_manual else (det.producto.nombre if det.producto else 'Item') }}{% if det.variante %} <small class="text-muted">({{ det.variante.nombre_variante }})</small>{% endif %}
                                         </li>
                                         {% endfor %}
                                     </ul>

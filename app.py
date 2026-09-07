@@ -26,7 +26,7 @@ def create_app():
             result = sock.connect_ex(('127.0.0.1', 5432))
             sock.close()
             if result == 0:
-                db_url = 'postgresql://postgres:admin123@localhost:5432/ultra'
+                db_url = 'postgresql://postgres:admin123@localhost:5432/OMC'
             else:
                 instance_path = os.path.join(app.root_path, 'instance')
                 os.makedirs(instance_path, exist_ok=True)
@@ -76,17 +76,9 @@ def create_app():
     from routes.admin import admin_bp
     app.register_blueprint(admin_bp, url_prefix='/admin')
 
-    # Registro de Blueprint Bodega
-    from routes.bodega import bodega_bp
-    app.register_blueprint(bodega_bp, url_prefix='/bodega')
-
     # Registro de Blueprint Proveedores
     from routes.proveedores import providers_bp
     app.register_blueprint(providers_bp, url_prefix='/proveedores')
-
-    # Registro de Blueprint Clientes y Locales (Maneos)
-    from routes.clientes import clientes_bp
-    app.register_blueprint(clientes_bp, url_prefix='/clientes')
 
     # Registro de Blueprint Aprobaciones de Precios en Tiempo Real
     from routes.aprobaciones import aprobaciones_bp
@@ -256,9 +248,6 @@ def create_app():
         if current_user.rol == 'admin':
             return redirect(url_for('admin_bp.dashboard'))
             
-        if current_user.rol == 'bodega' or current_user.rol == 'vendedor_bodega':
-            return redirect(url_for('bodega_bp.dashboard'))
-            
         # Por defecto, Vendedores van directo a Cajas
         return redirect(url_for('sales_bp.procesar_venta'))
 
@@ -303,27 +292,5 @@ if __name__ == '__main__':
             db.session.add(master_admin)
             db.session.commit()
             print("[INFO] Usuario maestro 'admin@puntocel.com' fue creado automaticamente.")
-
-        if not User.query.filter_by(email='bodega@puntocel.com').first() and not User.query.filter_by(email='bodega@ultratech.com').first():
-            bodega_user = User(
-                nombre='Encargado de Bodega',
-                email='bodega@puntocel.com',
-                password_hash=generate_password_hash('Bodega123'),
-                rol='bodega'
-            )
-            db.session.add(bodega_user)
-            db.session.commit()
-            print("[INFO] Usuario bodega 'bodega@puntocel.com' fue creado automaticamente.")
-
-        if not User.query.filter_by(email='vendedor_bodega@puntocel.com').first() and not User.query.filter_by(email='vendedor_bodega@ultratech.com').first():
-            vb_user = User(
-                nombre='Vendedor de Bodega',
-                email='vendedor_bodega@puntocel.com',
-                password_hash=generate_password_hash('Vendedor123'),
-                rol='vendedor_bodega'
-            )
-            db.session.add(vb_user)
-            db.session.commit()
-            print("[INFO] Usuario vendedor bodega 'vendedor_bodega@puntocel.com' fue creado automaticamente.")
             
     app.run(debug=True)
