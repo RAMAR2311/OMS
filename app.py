@@ -248,13 +248,17 @@ def create_app():
 
     @app.route('/sw.js')
     def sw():
-        from flask import send_from_directory
-        return send_from_directory('static', 'sw.js', mimetype='application/javascript')
+        from flask import send_from_directory, make_response
+        resp = make_response(send_from_directory('static', 'sw.js', mimetype='application/javascript'))
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        return resp
 
     @app.route('/manifest.json')
     def manifest():
-        from flask import send_from_directory
-        return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+        from flask import send_from_directory, make_response
+        resp = make_response(send_from_directory('static', 'manifest.json', mimetype='application/manifest+json'))
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        return resp
 
     @app.route('/offline')
     def offline():
