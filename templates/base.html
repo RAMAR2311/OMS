@@ -258,8 +258,8 @@
         }
         .offcanvas-body .nav-link i,
         .offcanvas-body .nav-link .fa-solid {
-            color: #6B7280;
-            transition: color 0.2s ease-in-out;
+            color: var(--brand-primary) !important;
+            transition: transform 0.2s ease-in-out;
         }
         .offcanvas-body .nav-link:hover,
         .offcanvas-body .nav-link.active {
@@ -273,6 +273,7 @@
         .offcanvas-body .nav-link.active i,
         .offcanvas-body .nav-link.active .fa-solid {
             color: var(--brand-primary) !important;
+            transform: scale(1.15);
         }
         .offcanvas-body .border-bottom { border-bottom-color: var(--brand-border) !important; }
         .offcanvas-body .bg-light { background-color: #F8F9FA !important; border-color: var(--brand-border) !important; color: var(--brand-text) !important; }
@@ -384,60 +385,60 @@
                     <!-- Módulo Inventario -->
                     <li class="nav-item">
                         <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseInventario" role="button" aria-expanded="false" aria-controls="collapseInventario">
-                            <span><i class="fa-solid fa-box text-success me-2" style="width:20px; text-align:center;"></i> Módulo Inventario</span>
+                            <span><i class="fa-solid fa-box text-primary me-2" style="width:20px; text-align:center;"></i> Módulo Inventario</span>
                             <i class="fa-solid fa-chevron-down small text-muted"></i>
                         </a>
                         <div class="collapse" id="collapseInventario">
                             <ul class="nav flex-column ms-3 mt-1 mb-2 gap-1 border-start ps-2">
                                 <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/inventory"><i class="fa-solid fa-box-open text-success me-2" style="width:20px; text-align:center;"></i> Inventario Tienda</a>
+                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/inventory"><i class="fa-solid fa-box-open text-primary me-2" style="width:20px; text-align:center;"></i> Inventario Tienda</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/sales/catalogo"><i class="fa-solid fa-book-open text-brand-pink me-2" style="width:20px; text-align:center;"></i> Catálogo Físico</a>
+                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/sales/catalogo"><i class="fa-solid fa-book-open text-primary me-2" style="width:20px; text-align:center;"></i> Catálogo Físico</a>
                                 </li>
                             </ul>
                         </div>
                     </li>
                     <!-- Módulo Caja Visual -->
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/caja_visual"><i class="fa-solid fa-cash-register text-warning me-2" style="width:20px; text-align:center;"></i> Caja Registradora</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/caja_visual"><i class="fa-solid fa-cash-register text-primary me-2" style="width:20px; text-align:center;"></i> Caja Registradora</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/admin/vendedores"><i class="fa-solid fa-users text-info me-2" style="width:20px; text-align:center;"></i> Personal</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/admin/vendedores"><i class="fa-solid fa-users text-primary me-2" style="width:20px; text-align:center;"></i> Personal</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/proveedores"><i class="fa-solid fa-truck-field text-secondary me-2" style="width:20px; text-align:center;"></i> Proveedores</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/proveedores"><i class="fa-solid fa-truck-field text-primary me-2" style="width:20px; text-align:center;"></i> Proveedores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-danger me-2" style="width:20px; text-align:center;"></i> Gastos</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-primary me-2" style="width:20px; text-align:center;"></i> Gastos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex align-items-center justify-content-between" href="{{ url_for('admin_bp.aprobaciones') }}">
                             <div>
-                                <i class="fa-solid fa-stamp text-danger me-2" style="width:20px; text-align:center;"></i> Aprobaciones de Precios
+                                <i class="fa-solid fa-stamp text-primary me-2" style="width:20px; text-align:center;"></i> Aprobaciones de Precios
                             </div>
                             <span class="badge bg-danger rounded-pill px-2 py-1 small" id="sidebar_approval_badge" style="display: none;">0</span>
                         </a>
                     </li>
                     <li class="nav-item mt-2">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-brand-blue me-2" style="width:20px; text-align:center;"></i> Arqueo de Caja</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-primary me-2" style="width:20px; text-align:center;"></i> Arqueo de Caja</a>
                     </li>
                 {% elif current_user.rol == 'vendedor' %}
                     <!-- Vistas Estrictamente Operativas (Cajeros) -->
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/caja_visual"><i class="fa-solid fa-cash-register text-brand-pink me-2" style="width:20px; text-align:center;"></i> Caja Registradora</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/caja_visual"><i class="fa-solid fa-cash-register text-primary me-2" style="width:20px; text-align:center;"></i> Caja Registradora</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/catalogo"><i class="fa-solid fa-book-open text-muted me-2" style="width:20px; text-align:center;"></i> Catálogo Rápido</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/catalogo"><i class="fa-solid fa-book-open text-primary me-2" style="width:20px; text-align:center;"></i> Catálogo Rápido</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/ventas_hoy"><i class="fa-solid fa-list-check me-2" style="color: var(--brand-blue); width:20px; text-align:center;"></i> Ventas del Día</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/ventas_hoy"><i class="fa-solid fa-list-check text-primary me-2" style="width:20px; text-align:center;"></i> Ventas del Día</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-success me-2" style="width:20px; text-align:center;"></i> Gastos</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-primary me-2" style="width:20px; text-align:center;"></i> Gastos</a>
                     </li>
                     <li class="nav-item mt-2">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-brand-blue me-2" style="width:20px; text-align:center;"></i> Arqueo de Caja</a>
+                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-primary me-2" style="width:20px; text-align:center;"></i> Arqueo de Caja</a>
                     </li>
                 {% endif %}
             </ul>
