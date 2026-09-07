@@ -635,6 +635,10 @@ def eliminar_venta(sale_id):
                     )
                     db.session.add(ajuste)
                     
+        # Desvincular autorizaciones de precio asociadas a esta venta
+        from models import PriceApproval
+        PriceApproval.query.filter_by(sale_id=venta.id).update({'sale_id': None, 'estado': 'cancelada'})
+
         # Eliminar Venta y Detalles (Cascada)
         db.session.delete(venta)
         db.session.commit()
@@ -642,7 +646,15 @@ def eliminar_venta(sale_id):
         
     except Exception as e:
         db.session.rollback()
+        import logging
+        logging.error(f"Error al anular venta #{sale_id}: {str(e)}", exc_info=True)
         flash('Ocurrió un error al anular la venta.', 'danger')
+
+    fecha_inicio = request.form.get('fecha_inicio')
+    fecha_fin = request.form.get('fecha_fin')
+    if fecha_inicio or fecha_fin:
+        return redirect(url_for('sales_bp.historial', fecha_inicio=fecha_inicio, fecha_fin=fecha_fin))
+    return redirect(url_for('sales_bp.historial'))
         
 # Endpoint para Editar Método/Distribución de Pago de una Venta Histórica
 @sales_bp.route('/editar_pago/<int:sale_id>', methods=['POST'])
