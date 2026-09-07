@@ -1,4 +1,4 @@
-const CACHE_NAME = 'omc-pwa-v1';
+const CACHE_NAME = 'omc-pwa-v2';
 
 const PRECACHE_ASSETS = [
     '/',
