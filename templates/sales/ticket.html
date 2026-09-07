@@ -221,6 +221,37 @@
             transform: translateY(-1px);
         }
 
+        .btn-return {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            background: #0F172A;
+            color: #FFFFFF;
+            border: none;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 25px;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.2);
+            text-transform: uppercase;
+        }
+
+        .btn-return:hover {
+            background: #1E293B;
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35);
+        }
+
         /* Modal Flotante para WhatsApp */
         .whatsapp-modal-overlay {
             position: fixed;
@@ -327,7 +358,7 @@
                 color: #000000 !important;
                 font-family: 'Roboto', sans-serif !important;
             }
-            .btn-print, .btn-whatsapp, .btn-download, .whatsapp-modal-overlay {
+            .btn-print, .btn-whatsapp, .btn-download, .btn-return, .whatsapp-modal-overlay {
                 display: none !important;
             }
         }
@@ -415,6 +446,10 @@
         <p style="margin-bottom: 4px;">Políticas de Tienda: Devoluciones únicamente presentando ticket impreso o digital.</p>
         <p>Soporte: ventas@omc.com</p>
     </div>
+
+    <a href="javascript:void(0);" onclick="volverACaja();" class="btn-return">
+        <i class="fa-solid fa-arrow-left"></i> Volver a Caja / Registrar Venta
+    </a>
 
     <button class="btn-print" type="button" onclick="window.print()">
         [ IMPRIMIR TICKET ]
@@ -593,7 +628,45 @@ Soporte: ventas@omc.com`;
         window.open(url, '_blank');
         cerrarModalWhatsApp();
     }
+
+    function volverACaja() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        
+        // Si está en la app instalada (PWA standalone) o no tiene ventana padre que la abrió
+        if (isStandalone) {
+            window.location.href = "{{ url_for('sales.caja_visual') }}";
+            return;
+        }
+
+        // Si fue abierta como pestaña nueva emergente desde el navegador
+        if (window.opener && !window.opener.closed) {
+            window.close();
+            // Si por política del navegador no se pudo cerrar:
+            setTimeout(() => {
+                window.location.href = "{{ url_for('sales.caja_visual') }}";
+            }, 300);
+        } else if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "{{ url_for('sales.caja_visual') }}";
+        }
+    }
 </script>
+
+<!-- Barra flotante fija superior para móviles y apps instaladas (PWA) -->
+<div class="d-print-none" style="position: fixed; top: 12px; left: 12px; z-index: 9999;">
+    <button type="button" onclick="volverACaja();" style="display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.9); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 14px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25); cursor: pointer; font-family: 'Montserrat', sans-serif; backdrop-filter: blur(4px);">
+        <i class="fa-solid fa-arrow-left"></i> Volver a Caja
+    </button>
+</div>
+
+<style>
+@media print {
+    .d-print-none {
+        display: none !important;
+    }
+}
+</style>
 
 </body>
 </html>
