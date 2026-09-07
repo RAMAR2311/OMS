@@ -1,4 +1,4 @@
-const CACHE_NAME = 'puntocel-pwa-v1';
+const CACHE_NAME = 'puntocel-pwa-v2';
 
 const PRECACHE_ASSETS = [
     '/',

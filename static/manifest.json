@@ -42,25 +42,18 @@
     ],
     "shortcuts": [
         {
-            "name": "Punto de Venta",
-            "short_name": "Ventas",
-            "description": "Registrar una nueva venta o factura",
-            "url": "/sales/",
-            "icons": [{ "src": "/static/img/icons/icon-192x192.png", "sizes": "192x192" }]
+            "name": "Caja Registradora",
+            "short_name": "Caja",
+            "description": "Registrar venta en caja",
+            "url": "/sales/caja_visual",
+            "icons": [{ "src": "/static/img/icons/icon-192x192.png?v=6", "sizes": "192x192" }]
         },
         {
             "name": "Arqueo de Caja",
             "short_name": "Arqueo",
             "description": "Consultar o realizar arqueo de caja",
-            "url": "/arqueo/",
-            "icons": [{ "src": "/static/img/icons/icon-192x192.png", "sizes": "192x192" }]
-        },
-        {
-            "name": "Locales Maneos",
-            "short_name": "Maneos",
-            "description": "Gestionar clientes y préstamos de mercancía",
-            "url": "/clientes/",
-            "icons": [{ "src": "/static/img/icons/icon-192x192.png", "sizes": "192x192" }]
+            "url": "/arqueo/nuevo",
+            "icons": [{ "src": "/static/img/icons/icon-192x192.png?v=6", "sizes": "192x192" }]
         }
     ]
 }
