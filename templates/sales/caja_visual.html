@@ -651,7 +651,12 @@
             html += `</div>`;
             
             document.getElementById('modalVariantesBody').innerHTML = html;
-            new bootstrap.Modal(document.getElementById('modalVariantes')).show();
+            const modalEl = document.getElementById('modalVariantes');
+            let modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (!modalInstance) {
+                modalInstance = new bootstrap.Modal(modalEl);
+            }
+            modalInstance.show();
         } else {
             if (pData.cantidad_stock <= 0) {
                 showToast(`⚠️ "${pData.nombre}" no tiene stock disponible en tienda.`, 'warning');
@@ -665,9 +670,24 @@
         const vData = activeVariantsData.find(v => v.id === variantId);
         if (!vData) return;
         addToCart(activeProductData.id, vData.id, activeProductData.nombre, activeProductData.sku, vData.precio_sugerido, vData.stock, vData.nombre);
+        
+        // Cerrar modal de subcategorías inmediatamente de forma garantizada
         const modalEl = document.getElementById('modalVariantes');
-        const modalInstance = bootstrap.Modal.getInstance(modalEl);
-        if (modalInstance) modalInstance.hide();
+        if (modalEl) {
+            const modalInstance = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+            // Fallback para celulares por si el backdrop o clases de Bootstrap se quedan pegadas
+            setTimeout(() => {
+                modalEl.classList.remove('show');
+                modalEl.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
+                document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            }, 150);
+        }
     };
 
     function addToCart(productId, variantId, nombre, sku, precio, maxStock, variantName = null) {
