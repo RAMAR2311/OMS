@@ -374,8 +374,8 @@
         <div class="subtitle-brand">OMC - ACCESORIOS PARA CELULARES</div>
         
         <p class="info">Folio / Ticket: #{{ venta.id }}</p>
-        <p class="info">Expedido: {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</p>
-        <p class="info">Cajero Asignado: {{ venta.vendedor.nombre }}</p>
+        <p class="info">Expedido: {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') if venta.fecha_venta else '' }}</p>
+        <p class="info">Cajero Asignado: {{ venta.vendedor.nombre if venta.vendedor else 'Caja General' }}</p>
         <p class="info" style="font-weight: bold; text-transform: uppercase;">
             {% if venta.pagos|length > 1 %}
                 Método de Pago: PAGO DIVIDIDO
@@ -402,11 +402,13 @@
                 <td class="col-prod">
                     {% if detalle.nombre_manual %}
                         {{ detalle.nombre_manual[:40] }}{% if detalle.nombre_manual|length > 40 %}...{% endif %}
-                    {% else %}
+                    {% elif detalle.producto %}
                         {{ detalle.producto.nombre[:40] }}{% if detalle.producto.nombre|length > 40 %}...{% endif %}
                         {% if detalle.variante %}
                             <br><small style="font-size: 0.75rem; color: #4D4D4D;">{{ detalle.variante.nombre_variante }}</small>
                         {% endif %}
+                    {% else %}
+                        Producto sin registrar
                     {% endif %}
                 </td>
                 <td class="col-sub">
@@ -504,13 +506,37 @@
     </div>
 </div>
 
+<!-- Contenedor de Texto Pre-renderizado para WhatsApp (Limpio y Seguro para Linters) -->
+<div id="ticketDataPayload" style="display: none;" data-sale-id="{{ venta.id }}">*OMC - ACCESORIOS PARA CELULARES*
+*Folio / Ticket:* #{{ venta.id }}
+*Expedido:* {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') if venta.fecha_venta else '' }}
+*Cajero:* {{ venta.vendedor.nombre if venta.vendedor else 'Caja General' }}
+*Metodo de Pago:* {% if venta.pagos|length > 1 %}PAGO DIVIDIDO{% elif venta.pagos|length == 1 %}{{ venta.pagos[0].metodo_pago|upper }}{% else %}{{ venta.metodo_pago|upper }}{% endif %}
+------------------------------------------
+*DETALLE DE COMPRA:*
+{% for detalle in venta.detalles %}
+- {{ detalle.cantidad_vendida }}x {% if detalle.nombre_manual %}{{ detalle.nombre_manual }}{% elif detalle.producto %}{{ detalle.producto.nombre }}{% if detalle.variante %} ({{ detalle.variante.nombre_variante }}){% endif %}{% else %}Producto{% endif %} : {% if detalle.precio_venta_final == 0 %}OBSEQUIO{% else %}${{ ((detalle.precio_venta_final * detalle.cantidad_vendida)|cop) }}{% endif %}
+{% endfor %}
+------------------------------------------
+*TOTAL: ${{ (venta.monto_total)|cop }}*
+{% if venta.pagos|length > 1 %}
+_Desglose:_
+{% for pago in venta.pagos %}  * {{ pago.metodo_pago|capitalize }}: ${{ (pago.monto)|cop }}
+{% endfor %}
+{% endif %}
+Gracias por tu compra en OMC Accesorios.
+Politicas: Devoluciones unicamente con ticket impreso o digital.
+Soporte: ventas@omc.com</div>
+
 <!-- Lógica de Auto-Impresión Reactiva y Enlace a WhatsApp con Imagen -->
 <script>
-    const SALE_ID = "{{ venta.id }}";
+    const ticketPayload = document.getElementById('ticketDataPayload');
+    const SALE_ID = ticketPayload ? ticketPayload.getAttribute('data-sale-id') : '';
+    const mensajeTextoLimpio = ticketPayload ? ticketPayload.textContent.trim() : '';
 
     async function generarCanvasTicket() {
         const ticket = document.querySelector('.ticket');
-        const botones = ticket.querySelectorAll('.btn-print, .btn-whatsapp, .btn-download');
+        const botones = ticket.querySelectorAll('.btn-print, .btn-whatsapp, .btn-download, .btn-return');
         botones.forEach(b => b.style.display = 'none');
 
         try {
@@ -588,28 +614,6 @@
         cerrarModalWhatsApp();
     }
 
-    // Texto limpio garantizado sin caracteres conflictivos
-    const mensajeTextoLimpio = `*OMC - ACCESORIOS PARA CELULARES*
-*Folio / Ticket:* #{{ venta.id }}
-*Expedido:* {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}
-*Cajero:* {{ venta.vendedor.nombre }}
-*Metodo de Pago:* {% if venta.pagos|length > 1 %}PAGO DIVIDIDO{% elif venta.pagos|length == 1 %}{{ venta.pagos[0].metodo_pago|upper }}{% else %}{{ venta.metodo_pago|upper }}{% endif %}
-------------------------------------------
-*DETALLE DE COMPRA:*
-{% for detalle in venta.detalles %}
-- {{ detalle.cantidad_vendida }}x {% if detalle.nombre_manual %}{{ detalle.nombre_manual }}{% else %}{{ detalle.producto.nombre }}{% if detalle.variante %} ({{ detalle.variante.nombre_variante }}){% endif %}{% endif %} : {% if detalle.precio_venta_final == 0 %}OBSEQUIO{% else %}${{ ((detalle.precio_venta_final * detalle.cantidad_vendida)|cop) }}{% endif %}
-{% endfor %}
-------------------------------------------
-*TOTAL: ${{ (venta.monto_total)|cop }}*
-{% if venta.pagos|length > 1 %}
-_Desglose:_
-{% for pago in venta.pagos %}  * {{ pago.metodo_pago|capitalize }}: ${{ (pago.monto)|cop }}
-{% endfor %}
-{% endif %}
-Gracias por tu compra en OMC Accesorios.
-Politicas: Devoluciones unicamente con ticket impreso o digital.
-Soporte: ventas@omc.com`;
-
     function enviarWhatsAppSoloTexto() {
         const input = document.getElementById('waNumeroInput');
         let raw = input ? input.value.replace(/\D/g, '') : '';
@@ -634,7 +638,7 @@ Soporte: ventas@omc.com`;
         
         // Si está en la app instalada (PWA standalone) o no tiene ventana padre que la abrió
         if (isStandalone) {
-            window.location.href = "{{ url_for('sales.caja_visual') }}";
+            window.location.href = "{{ url_for('sales_bp.caja_visual') }}";
             return;
         }
 
@@ -643,12 +647,12 @@ Soporte: ventas@omc.com`;
             window.close();
             // Si por política del navegador no se pudo cerrar:
             setTimeout(() => {
-                window.location.href = "{{ url_for('sales.caja_visual') }}";
+                window.location.href = "{{ url_for('sales_bp.caja_visual') }}";
             }, 300);
         } else if (window.history.length > 1) {
             window.history.back();
         } else {
-            window.location.href = "{{ url_for('sales.caja_visual') }}";
+            window.location.href = "{{ url_for('sales_bp.caja_visual') }}";
         }
     }
 </script>

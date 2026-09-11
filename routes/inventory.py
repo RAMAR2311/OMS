@@ -1,4 +1,6 @@
 import os
+import uuid
+from PIL import Image, ImageOps
 from werkzeug.utils import secure_filename
 from flask import current_app, Blueprint, render_template, request, redirect, url_for, flash, abort, send_file, jsonify
 from flask_login import login_required, current_user
@@ -8,6 +10,46 @@ import pandas as pd
 from io import BytesIO
 
 inventory_bp = Blueprint('inventory_bp', __name__)
+
+def guardar_imagen_optimizada(file, upload_folder, max_dim=1000, quality=85):
+    """
+    Procesa fotos tomadas directamente desde celulares (iPhone, Android) o PC:
+    - Genera un nombre único con UUID para evitar sobreescrituras accidentales.
+    - Corrige automáticamente la rotación EXIF (para que las fotos verticales nunca salgan volteadas de lado).
+    - Convierte modos RGBA/CMYK/P a RGB estándar para máxima compatibilidad web.
+    - Redimensiona proporcionalmente a un máximo de 1000x1000 px.
+    - Comprime a JPEG de alta eficiencia (reduce fotos de 10MB a ~80-120KB, carga ultrarrápida en 4G).
+    """
+    if not file or not file.filename:
+        return None
+
+    os.makedirs(upload_folder, exist_ok=True)
+    nombre_unico = f"prod_{uuid.uuid4().hex[:12]}.jpg"
+    ruta_destino = os.path.join(upload_folder, nombre_unico)
+
+    try:
+        # Abrir imagen con Pillow desde el stream en memoria
+        img = Image.open(file.stream)
+        
+        # Corregir orientación EXIF del celular
+        img = ImageOps.exif_transpose(img)
+
+        # Convertir a RGB si tiene canal alfa o paleta
+        if img.mode in ('RGBA', 'LA', 'P', 'CMYK'):
+            img = img.convert('RGB')
+
+        # Redimensionar proporcionalmente sin deformar
+        img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+
+        # Guardar comprimida y optimizada
+        img.save(ruta_destino, format='JPEG', quality=quality, optimize=True)
+        return nombre_unico
+    except Exception as e:
+        # Fallback de emergencia si Pillow no reconoce algún formato extraño
+        file.seek(0)
+        filename_fallback = f"prod_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
+        file.save(os.path.join(upload_folder, filename_fallback))
+        return filename_fallback
 
 @inventory_bp.route('/', methods=['GET'])
 @login_required
@@ -77,17 +119,15 @@ def index():
 @admin_or_bodega_required
 def nuevo():
     if request.method == 'POST':
-        # --- Manejo de Imagen ---
+        # --- Manejo de Imagen Optimizado para Móvil y Web ---
         imagen_filename = None
         if 'imagen' in request.files:
             file = request.files['imagen']
             if file and file.filename != '':
-                filename = secure_filename(file.filename)
                 try:
-                    file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                    imagen_filename = filename
-                except OSError as e:
-                    flash(f'Error al guardar la imagen (Revisa permisos o la ruta en el VPS): {str(e)}', 'danger')
+                    imagen_filename = guardar_imagen_optimizada(file, current_app.config['UPLOAD_FOLDER'])
+                except Exception as e:
+                    flash(f'Error al procesar la imagen: {str(e)}', 'danger')
                     return redirect(url_for('inventory_bp.nuevo'))
 
         # La instanciación agrupa todos los parámetros del nuevo producto
@@ -180,24 +220,17 @@ def editar_producto(id):
     if request.method == 'POST':
         stock_total_anterior = producto.total_stock
         
-        # Actualizar Imagen si se sube una nueva
-        print("DEBUG: Processing POST request for /editar/" + str(id))
+        # Actualizar Imagen si se sube una nueva (Optimizado para fotos desde el celular)
         if 'imagen' in request.files:
             file = request.files['imagen']
-            print("DEBUG: 'imagen' found in request.files. filename:", file.filename)
             if file and file.filename != '':
-                filename = secure_filename(file.filename)
-                print("DEBUG: secure_filename is:", filename)
                 try:
-                    file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                    print("DEBUG: file saved successfully to:", os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                    producto.imagen = filename
-                except OSError as e:
-                    print("DEBUG: OSError saving file:", e)
-                    flash(f'Error al guardar la imagen (Revisa permisos o la ruta en el VPS): {str(e)}', 'danger')
+                    nuevo_nombre = guardar_imagen_optimizada(file, current_app.config['UPLOAD_FOLDER'])
+                    if nuevo_nombre:
+                        producto.imagen = nuevo_nombre
+                except Exception as e:
+                    flash(f'Error al procesar la imagen: {str(e)}', 'danger')
                     return redirect(url_for('inventory_bp.editar_producto', id=id))
-        else:
-            print("DEBUG: 'imagen' NOT found in request.files")
                 
                 
         # Datos básicos con validación de SKU único
