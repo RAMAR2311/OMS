@@ -1,6 +1,5 @@
 import os
 import uuid
-from PIL import Image, ImageOps
 from werkzeug.utils import secure_filename
 from flask import current_app, Blueprint, render_template, request, redirect, url_for, flash, abort, send_file, jsonify
 from flask_login import login_required, current_user
@@ -8,6 +7,12 @@ from models import db, Product, StockAdjustment, ProductVariant
 from decorators import admin_required, admin_or_bodega_required
 import pandas as pd
 from io import BytesIO
+
+try:
+    from PIL import Image, ImageOps
+    HAS_PILLOW = True
+except ImportError:
+    HAS_PILLOW = False
 
 inventory_bp = Blueprint('inventory_bp', __name__)
 
@@ -19,6 +24,7 @@ def guardar_imagen_optimizada(file, upload_folder, max_dim=1000, quality=85):
     - Convierte modos RGBA/CMYK/P a RGB estándar para máxima compatibilidad web.
     - Redimensiona proporcionalmente a un máximo de 1000x1000 px.
     - Comprime a JPEG de alta eficiencia (reduce fotos de 10MB a ~80-120KB, carga ultrarrápida en 4G).
+    - Fallback resiliente si Pillow no está instalado en el servidor.
     """
     if not file or not file.filename:
         return None
@@ -27,29 +33,32 @@ def guardar_imagen_optimizada(file, upload_folder, max_dim=1000, quality=85):
     nombre_unico = f"prod_{uuid.uuid4().hex[:12]}.jpg"
     ruta_destino = os.path.join(upload_folder, nombre_unico)
 
-    try:
-        # Abrir imagen con Pillow desde el stream en memoria
-        img = Image.open(file.stream)
-        
-        # Corregir orientación EXIF del celular
-        img = ImageOps.exif_transpose(img)
+    if HAS_PILLOW:
+        try:
+            # Abrir imagen con Pillow desde el stream en memoria
+            img = Image.open(file.stream)
+            
+            # Corregir orientación EXIF del celular
+            img = ImageOps.exif_transpose(img)
 
-        # Convertir a RGB si tiene canal alfa o paleta
-        if img.mode in ('RGBA', 'LA', 'P', 'CMYK'):
-            img = img.convert('RGB')
+            # Convertir a RGB si tiene canal alfa o paleta
+            if img.mode in ('RGBA', 'LA', 'P', 'CMYK'):
+                img = img.convert('RGB')
 
-        # Redimensionar proporcionalmente sin deformar
-        img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+            # Redimensionar proporcionalmente sin deformar
+            img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
 
-        # Guardar comprimida y optimizada
-        img.save(ruta_destino, format='JPEG', quality=quality, optimize=True)
-        return nombre_unico
-    except Exception as e:
-        # Fallback de emergencia si Pillow no reconoce algún formato extraño
-        file.seek(0)
-        filename_fallback = f"prod_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
-        file.save(os.path.join(upload_folder, filename_fallback))
-        return filename_fallback
+            # Guardar comprimida y optimizada
+            img.save(ruta_destino, format='JPEG', quality=quality, optimize=True)
+            return nombre_unico
+        except Exception:
+            pass
+
+    # Fallback seguro si Pillow no está disponible o falla el formato
+    file.seek(0)
+    filename_fallback = f"prod_{uuid.uuid4().hex[:8]}_{secure_filename(file.filename)}"
+    file.save(os.path.join(upload_folder, filename_fallback))
+    return filename_fallback
 
 @inventory_bp.route('/', methods=['GET'])
 @login_required

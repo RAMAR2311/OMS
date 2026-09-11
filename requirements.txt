@@ -22,3 +22,4 @@ psycopg2-binary
 gunicorn==21.2.0
 pandas
 openpyxl
+Pillow>=10.0.0
