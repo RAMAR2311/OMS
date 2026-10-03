@@ -38,6 +38,7 @@ class Product(db.Model):
     nombre = db.Column(db.String(150), nullable=False)
     sku = db.Column(db.String(50), unique=True, nullable=False, index=True)
     tipo_inventario = db.Column(db.String(50), nullable=False, server_default='tienda') # 'tienda' o 'bodega'
+    activo = db.Column(db.Boolean, default=True, server_default='1', nullable=False)
     cantidad_stock = db.Column(db.Integer, nullable=False, default=0)
     precio_costo = db.Column(db.Numeric(10, 2), nullable=False, default=0.00) # El Costo de Bodega
     precio_minimo = db.Column(db.Numeric(10, 2), nullable=False)

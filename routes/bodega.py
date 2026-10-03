@@ -56,7 +56,7 @@ def dashboard():
         abonos_recientes = AbonoBodega.query.order_by(AbonoBodega.fecha_abono.desc()).limit(10).all()
 
         # Alertas de stock bajo en bodega (stock <= 5)
-        productos_bodega = Product.query.filter_by(tipo_inventario='bodega').all()
+        productos_bodega = Product.query.filter_by(tipo_inventario='bodega', activo=True).all()
         alertas_stock_bajo = sum(1 for p in productos_bodega if (p.cantidad_stock or 0) <= 5)
 
     return render_template(
@@ -308,7 +308,7 @@ def caja_rapida():
             flash(f'Ocurrió un error al registrar la venta.', 'danger')
             return redirect(url_for('bodega_bp.caja_rapida'))
 
-    productos = Product.query.filter_by(tipo_inventario='bodega').order_by(Product.nombre.asc()).all()
+    productos = Product.query.filter_by(tipo_inventario='bodega', activo=True).order_by(Product.nombre.asc()).all()
     clientes = Cliente.query.order_by(Cliente.nombre_o_razon_social.asc()).all()
     
     return render_template('bodega/caja_rapida.html', productos=productos, clientes=clientes)
@@ -485,7 +485,7 @@ def nueva_factura():
 
     clientes = Cliente.query.order_by(Cliente.nombre_o_razon_social).all()
     # Enviamos los productos disponibles a la vista, incluyendo productos con stock 0
-    productos_disp = Product.query.filter_by(tipo_inventario='bodega').order_by(Product.nombre).all()
+    productos_disp = Product.query.filter_by(tipo_inventario='bodega', activo=True).order_by(Product.nombre).all()
     
     preselected_id = request.args.get('preselected_id', type=int)
     
@@ -498,7 +498,7 @@ def nueva_factura():
 @login_required
 @any_bodega_required
 def api_buscar_producto_bodega(sku):
-    producto = Product.query.filter_by(sku=sku, tipo_inventario='bodega').first()
+    producto = Product.query.filter_by(sku=sku, tipo_inventario='bodega', activo=True).first()
     
     if not producto:
         return jsonify({'error': 'Código SKU no encontrado en bodega'}), 404

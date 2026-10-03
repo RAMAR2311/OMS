@@ -26,8 +26,8 @@ def prestar():
         flash("Todos los campos son obligatorios y la cantidad debe ser mayor a 0.", "danger")
         return redirect(url_for('maneos_bp.index'))
 
-    # Buscar el producto o variante por SKU
-    producto = Product.query.filter_by(sku=sku_busqueda).first()
+    # Buscar el producto o variante por SKU (solo productos activos)
+    producto = Product.query.filter_by(sku=sku_busqueda, activo=True).first()
     variant_id = request.form.get('variant_id')
     variante = None
 

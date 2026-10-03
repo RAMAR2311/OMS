@@ -35,6 +35,8 @@ def main():
             "ALTER TABLE clientes ALTER COLUMN telefono DROP NOT NULL;",
             # Tabla price_approvals
             "ALTER TABLE price_approvals ADD COLUMN IF NOT EXISTS sale_id INTEGER;",
+            # Tabla products (Borrado Lógico)
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS activo BOOLEAN NOT NULL DEFAULT TRUE;",
         ]
 
         for sql in columnas:
@@ -44,6 +46,28 @@ def main():
             except Exception as e:
                 db.session.rollback()
                 print(f"[Aviso] {sql} -> {e}")
+
+        # Asegurar columna activo en SQLite si aplica y asegurar valor TRUE para existentes
+        try:
+            inspector = db.inspect(db.engine)
+            cols = [c['name'] for c in inspector.get_columns('products')]
+            if 'activo' not in cols:
+                db.session.execute(db.text("ALTER TABLE products ADD COLUMN activo BOOLEAN NOT NULL DEFAULT 1;"))
+                db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("UPDATE products SET activo = TRUE WHERE activo IS NULL;"))
+            db.session.commit()
+        except Exception:
+            try:
+                db.session.rollback()
+                db.session.execute(db.text("UPDATE products SET activo = 1 WHERE activo IS NULL;"))
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"[Aviso update activo] -> {e}")
 
         # 3. Ajustar valores antiguos registrados con números abreviados (ej: 30 -> 30000)
         try:
