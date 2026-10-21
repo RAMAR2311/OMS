@@ -35,10 +35,10 @@ class Product(db.Model):
     __tablename__ = 'products'
     
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(150), nullable=False)
+    nombre = db.Column(db.String(150), nullable=False, index=True)
     sku = db.Column(db.String(50), unique=True, nullable=False, index=True)
-    tipo_inventario = db.Column(db.String(50), nullable=False, server_default='tienda') # 'tienda' o 'bodega'
-    activo = db.Column(db.Boolean, default=True, server_default='1', nullable=False)
+    tipo_inventario = db.Column(db.String(50), nullable=False, server_default='tienda', index=True) # 'tienda' o 'bodega'
+    activo = db.Column(db.Boolean, default=True, server_default='1', nullable=False, index=True)
     cantidad_stock = db.Column(db.Integer, nullable=False, default=0)
     precio_costo = db.Column(db.Numeric(10, 2), nullable=False, default=0.00) # El Costo de Bodega
     precio_minimo = db.Column(db.Numeric(10, 2), nullable=False)
@@ -104,8 +104,8 @@ class ProductVariant(db.Model):
     __tablename__ = 'product_variants'
 
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    nombre_variante = db.Column(db.String(100), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False, index=True)
+    nombre_variante = db.Column(db.String(100), nullable=False, index=True)
     cantidad_stock = db.Column(db.Integer, nullable=False, default=0)
     
     # Nuevos precios específicos para variantes
@@ -120,8 +120,8 @@ class Sale(db.Model):
     __tablename__ = 'sales'
     
     id = db.Column(db.Integer, primary_key=True)
-    vendedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    fecha_venta = db.Column(db.DateTime, default=obtener_hora_bogota)
+    vendedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    fecha_venta = db.Column(db.DateTime, default=obtener_hora_bogota, index=True)
     monto_total = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
     metodo_pago = db.Column(db.String(50), nullable=False, default='efectivo')
 
@@ -152,8 +152,8 @@ class SalePayment(db.Model):
     __tablename__ = 'sale_payments'
 
     id = db.Column(db.Integer, primary_key=True)
-    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
-    metodo_pago = db.Column(db.String(50), nullable=False)  # efectivo, nequi, bancolombia, daviplata
+    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False, index=True)
+    metodo_pago = db.Column(db.String(50), nullable=False, index=True)  # efectivo, nequi, bancolombia, daviplata
     monto = db.Column(db.Numeric(10, 2), nullable=False)
 
     def __init__(self, **kwargs):
@@ -165,9 +165,9 @@ class SaleDetail(db.Model):
     __tablename__ = 'sale_details'
     
     id = db.Column(db.Integer, primary_key=True)
-    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True)
-    variant_id = db.Column(db.Integer, db.ForeignKey('product_variants.id'), nullable=True)
+    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False, index=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True, index=True)
+    variant_id = db.Column(db.Integer, db.ForeignKey('product_variants.id'), nullable=True, index=True)
     cantidad_vendida = db.Column(db.Integer, nullable=False)
     precio_venta_final = db.Column(db.Numeric(10, 2), nullable=False)
     # Campos para productos manuales (prestados de otros locales)
@@ -290,13 +290,13 @@ class Expense(db.Model):
     __tablename__ = 'expenses'
     
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    tipo_gasto = db.Column(db.String(50), nullable=False) # 'Gasto Diario' o 'Costo Indirecto'
+    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    tipo_gasto = db.Column(db.String(50), nullable=False, index=True) # 'Gasto Diario' o 'Costo Indirecto'
     categoria = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.String(255), nullable=True)
     monto = db.Column(db.Numeric(10, 2), nullable=False)
     metodo_pago = db.Column(db.String(50), nullable=False, default='efectivo')
-    fecha_gasto = db.Column(db.DateTime, default=obtener_hora_bogota)
+    fecha_gasto = db.Column(db.DateTime, default=obtener_hora_bogota, index=True)
 
     usuario = db.relationship('User', backref='gastos', lazy=True)
 

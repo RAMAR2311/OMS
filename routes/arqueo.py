@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 from models import db, Sale, SalePayment, ArqueoCaja, Expense, User
 from decorators import admin_required
 
@@ -40,7 +41,7 @@ def calcular_conciliacion_dia(fecha_seleccionada):
     inicio_dia = datetime.combine(fecha_seleccionada, datetime.min.time())
     fin_dia = inicio_dia + timedelta(days=1)
 
-    ventas = Sale.query.filter(
+    ventas = Sale.query.options(joinedload(Sale.pagos)).filter(
         Sale.fecha_venta >= inicio_dia,
         Sale.fecha_venta < fin_dia
     ).order_by(Sale.fecha_venta.desc()).all()

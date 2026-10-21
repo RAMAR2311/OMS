@@ -158,6 +158,10 @@
                 <small class="text-muted">Selección rápida por catálogo táctil y visual</small>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-primary rounded-pill px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalManualCaja" style="font-size: 0.88rem;">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>+ Producto Rápido / Manual</span>
+                </button>
                 <span class="badge bg-light text-muted border px-3 py-2 rounded-pill fw-semibold" id="searchMatchCount">
                     <i class="fa-solid fa-boxes-stacked me-1"></i> {{ productos|length }} productos
                 </span>
@@ -527,6 +531,47 @@
     </div>
 </div>
 
+<!-- Modal Producto Rápido / Manual (Para vender cargadores u otros ítems sin stock o prestados) -->
+<div class="modal fade" id="modalManualCaja" tabindex="-1" aria-labelledby="modalManualCajaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-brand-black d-flex align-items-center gap-2" id="modalManualCajaLabel">
+                    <i class="fa-solid fa-cart-plus text-primary"></i> Ingreso Rápido de Producto
+                </h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">Úsalo para vender cargadores o mercancía recién llegada sin stock o prestada de otro local.</p>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-dark mb-1">Nombre o Descripción del Producto *</label>
+                    <input type="text" id="manual_nombre_caja" class="form-control rounded-3" placeholder="Ej: Cargador Rápido 20W USB-C" required>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-dark mb-1">Precio a Cobrar ($) *</label>
+                        <input type="number" step="1" id="manual_precio_caja" class="form-control rounded-3" placeholder="Ej: 25000" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-muted mb-1">Costo Estimado ($)</label>
+                        <input type="number" step="1" id="manual_costo_caja" class="form-control rounded-3" placeholder="Ej: 12000 (Opcional)">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-dark mb-1">Cantidad a Vender</label>
+                    <input type="number" id="manual_cantidad_caja" class="form-control rounded-3" value="1" min="1">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" onclick="agregarManualCaja()">
+                    <i class="fa-solid fa-cart-plus me-1"></i> Agregar al Carrito
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const IS_ADMIN = {{ 'true' if current_user.rol == 'admin' else 'false' }};
     const csrf_token = "{{ csrf_token() }}";
@@ -734,6 +779,54 @@
     });
 
     // ==========================================
+    // AGREGAR PRODUCTO MANUAL / RÁPIDO A LA VENTA
+    // ==========================================
+    window.agregarManualCaja = function() {
+        const nombre = document.getElementById('manual_nombre_caja').value.trim();
+        const precio = parseFloat(document.getElementById('manual_precio_caja').value) || 0;
+        const costo = parseFloat(document.getElementById('manual_costo_caja').value) || 0;
+        const cantidad = parseInt(document.getElementById('manual_cantidad_caja').value) || 1;
+
+        if (!nombre) {
+            showToast('Por favor escribe el nombre del producto.', 'warning');
+            return;
+        }
+        if (precio <= 0) {
+            showToast('Ingresa un precio válido a cobrar mayor a 0.', 'warning');
+            return;
+        }
+
+        const manualId = 'manual_' + Date.now();
+        carrito.push({
+            product_id: manualId,
+            variant_id: null,
+            nombre: nombre,
+            sku: 'MANUAL',
+            precio_final: precio,
+            precio_sugerido: precio,
+            precio_minimo: costo,
+            cantidad: cantidad,
+            max_stock: 9999,
+            es_manual: true,
+            costo_manual: costo,
+            es_obsequio: false,
+            aprobado: true,
+            precio_aprobado: precio
+        });
+
+        const modalEl = document.getElementById('modalManualCaja');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        document.getElementById('manual_nombre_caja').value = '';
+        document.getElementById('manual_precio_caja').value = '';
+        document.getElementById('manual_costo_caja').value = '';
+        document.getElementById('manual_cantidad_caja').value = '1';
+
+        showToast(`"${nombre}" agregado a la venta`, 'success');
+        renderCart(carrito.length - 1);
+    };
+
+    // ==========================================
     // INTERACCIÓN CON PRODUCTOS Y VARIANTES
     // ==========================================
     function handleProductClick(el) {
@@ -749,14 +842,11 @@
             vData.forEach(v => {
                 let badge = v.stock > 0 
                     ? `<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-bold">${v.stock} disp</span>` 
-                    : `<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2 fw-bold">0 disp</span>`;
-                let btnState = v.stock > 0 ? '' : 'disabled';
-                let opacityStyle = v.stock > 0 ? '' : 'opacity: 0.6; cursor: not-allowed;';
+                    : `<span class="badge bg-warning bg-opacity-25 text-dark rounded-pill px-2 py-1 fw-bold">Sin stock (Venta Rápida)</span>`;
                 
                 html += `
                 <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center rounded-3 border py-3 px-3 shadow-2xs" 
-                        style="${opacityStyle}" 
-                        onclick="addVariantToCart(${v.id})" ${btnState}>
+                        onclick="addVariantToCart(${v.id})">
                     <div>
                         <strong class="fs-6 text-dark d-block mb-1">${v.nombre}</strong>
                         <span class="text-brand-pink fw-bold">${formatoCOP(v.precio_sugerido)}</span>
@@ -776,7 +866,24 @@
             modalInstance.show();
         } else {
             if (pData.cantidad_stock <= 0) {
-                showToast(`⚠️ "${pData.nombre}" no tiene stock disponible en tienda.`, 'warning');
+                showToast(`⚠️ "${pData.nombre}" figura con stock 0. Se agregó como venta rápida.`, 'warning', 3000);
+                carrito.push({
+                    product_id: pData.id,
+                    variant_id: null,
+                    nombre: pData.nombre,
+                    sku: pData.sku,
+                    precio_final: pData.precio_sugerido,
+                    precio_sugerido: pData.precio_sugerido,
+                    precio_minimo: pData.precio_minimo || 0,
+                    cantidad: 1,
+                    max_stock: 9999,
+                    es_manual: true,
+                    costo_manual: pData.precio_costo || 0,
+                    es_obsequio: false,
+                    aprobado: true,
+                    precio_aprobado: null
+                });
+                renderCart(carrito.length - 1);
                 return;
             }
             addToCart(pData.id, null, pData.nombre, pData.sku, pData.precio_sugerido, pData.cantidad_stock, null, pData.precio_minimo || 0);
@@ -786,7 +893,29 @@
     window.addVariantToCart = function(variantId) {
         const vData = activeVariantsData.find(v => v.id === variantId);
         if (!vData) return;
-        addToCart(activeProductData.id, vData.id, activeProductData.nombre, activeProductData.sku, vData.precio_sugerido, vData.stock, vData.nombre, vData.precio_minimo || activeProductData.precio_minimo || 0);
+        
+        if (vData.stock <= 0) {
+            showToast(`⚠️ "${activeProductData.nombre} - ${vData.nombre}" figura con stock 0. Se agregó como venta rápida.`, 'warning', 3000);
+            carrito.push({
+                product_id: activeProductData.id,
+                variant_id: vData.id,
+                nombre: `${activeProductData.nombre} - ${vData.nombre}`,
+                sku: activeProductData.sku,
+                precio_final: vData.precio_sugerido,
+                precio_sugerido: vData.precio_sugerido,
+                precio_minimo: vData.precio_minimo || activeProductData.precio_minimo || 0,
+                cantidad: 1,
+                max_stock: 9999,
+                es_manual: true,
+                costo_manual: vData.precio_costo || activeProductData.precio_costo || 0,
+                es_obsequio: false,
+                aprobado: true,
+                precio_aprobado: null
+            });
+            renderCart(carrito.length - 1);
+        } else {
+            addToCart(activeProductData.id, vData.id, activeProductData.nombre, activeProductData.sku, vData.precio_sugerido, vData.stock, vData.nombre, vData.precio_minimo || activeProductData.precio_minimo || 0);
+        }
         
         // Cerrar modal de subcategorías inmediatamente de forma garantizada
         const modalEl = document.getElementById('modalVariantes');
@@ -795,7 +924,6 @@
             if (modalInstance) {
                 modalInstance.hide();
             }
-            // Fallback para celulares por si el backdrop o clases de Bootstrap se quedan pegadas
             setTimeout(() => {
                 modalEl.classList.remove('show');
                 modalEl.style.display = 'none';
@@ -1501,11 +1629,14 @@
 
             const payload = {
                 items: carrito.map(item => ({
-                    product_id: item.product_id,
+                    product_id: (typeof item.product_id === 'string' && item.product_id.startsWith('manual_')) ? null : item.product_id,
                     variant_id: item.variant_id,
                     cantidad: item.cantidad,
                     precio_final: item.precio_final,
-                    es_obsequio: item.es_obsequio
+                    es_obsequio: item.es_obsequio,
+                    es_manual: item.es_manual || false,
+                    nombre_manual: item.es_manual ? item.nombre : null,
+                    precio_costo: item.es_manual ? (item.costo_manual || 0) : null
                 })),
                 pagos: pagosPayload,
                 fecha_venta: document.getElementById('fecha_venta_input') ? document.getElementById('fecha_venta_input').value : null,

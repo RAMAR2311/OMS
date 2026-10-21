@@ -64,12 +64,13 @@ def guardar_imagen_optimizada(file, upload_folder, max_dim=1000, quality=85):
 @login_required
 @admin_required
 def index():
+    from sqlalchemy.orm import joinedload
     tipo = 'tienda'
     page = request.args.get('page', 1, type=int)
     q = request.args.get('q', '').strip()
     per_page = 20
 
-    base_query = Product.query.filter_by(tipo_inventario=tipo, activo=True)
+    base_query = Product.query.filter_by(tipo_inventario=tipo, activo=True).options(joinedload(Product.variantes))
     if q:
         from sqlalchemy import or_
         base_query = base_query.filter(
@@ -87,9 +88,9 @@ def index():
     )
     productos = paginacion.items
 
-    # --- KPIs de Inventario ---
-    # Se calcula sobre TODO el inventario activo (no solo la página actual)
-    todos = Product.query.filter_by(tipo_inventario=tipo, activo=True).all()
+    # --- KPIs de Inventario Ultrarrápidos ---
+    # Una sola consulta con joinedload en vez de 500+ consultas individuales N+1
+    todos = Product.query.filter_by(tipo_inventario=tipo, activo=True).options(joinedload(Product.variantes)).all()
     total_productos = len(todos)
 
     valor_costo = 0.0
@@ -152,16 +153,17 @@ def nuevo():
         # Si hay variantes, el stock base del producto maestro se ignora o se pone en 0
         stock_base = 0 if v_nombres else int(request.form.get('cantidad_stock') or 0)
 
-        # Validar unicidad del SKU antes de guardar
+        # Validar o auto-generar SKU para que el usuario nunca quede bloqueado
         sku_candidato = request.form.get('sku', '').strip()
         if not sku_candidato:
-            flash('Debes ingresar un código SKU para el producto.', 'warning')
-            return render_template('inventory/form.html')
+            # Auto-generar un SKU único y limpio para no frustrar la carga rápida
+            prefijo = 'CARG' if 'carg' in request.form.get('nombre', '').lower() else 'SKU'
+            sku_candidato = f"{prefijo}-{uuid.uuid4().hex[:6].upper()}"
 
         prod_existente = Product.query.filter_by(sku=sku_candidato, activo=True).first()
         if prod_existente:
-            flash(f'El código SKU "{sku_candidato}" ya existe en el inventario (pertenece a "{prod_existente.nombre}"). Cada producto debe tener un SKU único.', 'warning')
-            return render_template('inventory/form.html')
+            flash(f'El código SKU "{sku_candidato}" ya existe en el inventario (pertenece a "{prod_existente.nombre}"). Hemos conservado tus datos, por favor ingresa un SKU diferente.', 'warning')
+            return render_template('inventory/form.html', form_data=request.form)
 
         nuevo_prod = Product(
             sku=sku_candidato,
@@ -205,7 +207,7 @@ def nuevo():
             db.session.add(ajuste_inicial)
             db.session.commit()
 
-            flash('Producto Maestro y sus subcategorías creados exitosamente.', 'success')
+            flash('Producto creado exitosamente.', 'success')
             return redirect(url_for('inventory_bp.index'))
         except Exception as e:
             db.session.rollback()
@@ -213,6 +215,7 @@ def nuevo():
                 flash(f'El SKU "{sku_candidato}" ya se encuentra registrado. Utiliza un código diferente.', 'danger')
             else:
                 flash(f'Error al intentar guardar el producto: {str(e)}', 'danger')
+            return render_template('inventory/form.html', form_data=request.form)
             
     return render_template('inventory/form.html')
 
@@ -477,6 +480,34 @@ def editar_variante(id):
         db.session.rollback()
         flash('Error al editar la variante.', 'danger')
         
+    return redirect(url_for('inventory_bp.index'))
+
+@inventory_bp.route('/producto/<int:id>/sumar_stock', methods=['POST'])
+@login_required
+@admin_or_bodega_required
+def sumar_stock_producto(id):
+    producto = Product.query.get_or_404(id)
+    try:
+        cantidad = int(request.form.get('cantidad_sumar', 0))
+        if cantidad != 0:
+            stock_anterior = producto.cantidad_stock
+            producto.cantidad_stock += cantidad
+            ajuste = StockAdjustment(
+                product_id=producto.id,
+                admin_id=current_user.id,
+                tipo_movimiento=f'Ingreso rápido de stock (+{cantidad} uds)',
+                stock_anterior=stock_anterior,
+                stock_nuevo=producto.cantidad_stock
+            )
+            db.session.add(ajuste)
+            db.session.commit()
+            flash(f'Se agregaron {cantidad} unidades a "{producto.nombre}". Stock actual: {producto.cantidad_stock}.', 'success')
+        else:
+            flash('Por favor ingresa una cantidad mayor a 0.', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al sumar stock: {str(e)}', 'danger')
+
     return redirect(url_for('inventory_bp.index'))
 
 @inventory_bp.route('/variantes_masivo/<int:producto_id>', methods=['POST'])

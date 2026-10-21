@@ -286,7 +286,11 @@ def api_search_products():
     tokens_norm = [normalizar_texto(t) for t in tokens]
     
     # Filtro preliminar en SQL con comodín de vocales para optimizar lectura en BD
-    base_query = Product.query.filter(Product.tipo_inventario == 'tienda', Product.activo == True)
+    base_query = Product.query.filter(
+        Product.tipo_inventario == 'tienda', 
+        Product.activo == True
+    ).options(joinedload(Product.variantes))
+
     for token in tokens:
         wildcard_v = comodin_vocales(token)
         base_query = base_query.filter(
@@ -299,12 +303,22 @@ def api_search_products():
             )
         )
     
-    candidatos = base_query.limit(40).all()
+    candidatos = base_query.limit(30).all()
     
-    # Si la búsqueda SQL no trajo suficientes por caracteres especiales, incorporar catálogo de tienda
-    if len(candidatos) < 5:
-        todos_tienda = Product.query.filter_by(tipo_inventario='tienda', activo=True).all()
-        for p in todos_tienda:
+    # Si la búsqueda específica trajo pocos resultados, buscar por tokens individuales rápidos con joinedload
+    if len(candidatos) < 5 and len(tokens) > 1:
+        or_clauses = []
+        for token in tokens:
+            or_clauses.extend([
+                Product.sku.ilike(f'%{token}%'),
+                Product.nombre.ilike(f'%{token}%')
+            ])
+        adicionales = Product.query.filter(
+            Product.tipo_inventario == 'tienda',
+            Product.activo == True,
+            or_(*or_clauses)
+        ).options(joinedload(Product.variantes)).limit(20).all()
+        for p in adicionales:
             if p not in candidatos:
                 candidatos.append(p)
                 
@@ -389,20 +403,27 @@ def api_buscar_producto(sku):
     is_admin = (current_user.rol == 'admin')
     
     # 1. Búsqueda exacta
-    producto = Product.query.filter(Product.sku == sku_clean, Product.tipo_inventario == 'tienda', Product.activo == True).first()
+    producto = Product.query.filter(
+        Product.sku == sku_clean, 
+        Product.tipo_inventario == 'tienda', 
+        Product.activo == True
+    ).options(joinedload(Product.variantes)).first()
     
     # 2. Si no encuentra exacto, intentar case-insensitive
     if not producto:
-        producto = Product.query.filter(Product.sku.ilike(sku_clean), Product.tipo_inventario == 'tienda', Product.activo == True).first()
+        producto = Product.query.filter(
+            Product.sku.ilike(sku_clean), 
+            Product.tipo_inventario == 'tienda', 
+            Product.activo == True
+        ).options(joinedload(Product.variantes)).first()
         
-    # 3. Si aún no, buscar ignorando tildes y mayúsculas en nombre o SKU
+    # 3. Si aún no, buscar por coincidencia en nombre
     if not producto:
-        sku_norm = normalizar_texto(sku_clean)
-        todos_tienda = Product.query.filter_by(tipo_inventario='tienda', activo=True).all()
-        for p in todos_tienda:
-            if normalizar_texto(p.sku) == sku_norm or sku_norm in normalizar_texto(p.nombre):
-                producto = p
-                break
+        producto = Product.query.filter(
+            Product.tipo_inventario == 'tienda',
+            Product.activo == True,
+            Product.nombre.ilike(f'%{sku_clean}%')
+        ).options(joinedload(Product.variantes)).first()
     
     if not producto:
         return jsonify({'error': f"Código o producto '{sku_clean}' no encontrado en la tienda"}), 404
@@ -456,7 +477,7 @@ def historial():
     fecha_fin = request.args.get('fecha_fin', hoy_bogota)
     
     # Optimización: eager loading (evita N+1 con joinedload)
-    query = Sale.query.options(joinedload(Sale.vendedor))
+    query = Sale.query.options(joinedload(Sale.vendedor), joinedload(Sale.pagos))
     
     # Motor de búsqueda por Rango Restricto
     if fecha_inicio:
@@ -553,7 +574,7 @@ def ventas_hoy():
     fin_dt = datetime.combine(hoy_bogota, datetime.max.time())
     
     # Consultar todas las ventas de este día (sin importar si es admin o vendedor)
-    ventas = Sale.query.options(joinedload(Sale.vendedor)).filter(
+    ventas = Sale.query.options(joinedload(Sale.vendedor), joinedload(Sale.pagos)).filter(
         Sale.fecha_venta >= inicio_dt,
         Sale.fecha_venta <= fin_dt
     ).order_by(Sale.fecha_venta.desc()).all()
@@ -768,6 +789,9 @@ def catalogo():
 def caja_visual():
     from models import obtener_hora_bogota
     hoy_bogota = obtener_hora_bogota()
-    productos = Product.query.filter(Product.tipo_inventario == 'tienda', Product.activo == True).order_by(Product.nombre.asc()).all()
+    productos = Product.query.filter(
+        Product.tipo_inventario == 'tienda', 
+        Product.activo == True
+    ).options(joinedload(Product.variantes)).order_by(Product.nombre.asc()).all()
     return render_template('sales/caja_visual.html', productos=productos, hoy=hoy_bogota.strftime('%Y-%m-%d'))
 

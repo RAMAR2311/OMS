@@ -13,13 +13,19 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 
                 <div class="row g-4">
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <label class="form-label fw-bold text-brand-black">SKU / Código Maestro</label>
-                        <input type="text" class="form-control bg-light border-0" name="sku" required placeholder="Ej: FUNDA-XXX" value="{{ producto.sku if producto else '' }}">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0" id="skuInput" name="sku" placeholder="Ej: CARG-USBC o genera uno" value="{{ form_data.sku if form_data else (producto.sku if producto else '') }}">
+                            <button type="button" class="btn btn-outline-primary fw-semibold btn-sm px-3" onclick="generarSKUAuto()" title="Generar código automático">
+                                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Auto SKU
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mt-1">Si lo dejas vacío, el sistema le asignará uno único automáticamente.</small>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <label class="form-label fw-bold text-brand-black">Nombre del Producto Maestro</label>
-                        <input type="text" class="form-control bg-light border-0" name="nombre" required placeholder="Acme Case Pro" value="{{ producto.nombre if producto else '' }}">
+                        <input type="text" class="form-control bg-light border-0" id="nombreInput" name="nombre" required placeholder="Ej: Cargador Rápido 20W USB-C" value="{{ form_data.nombre if form_data else (producto.nombre if producto else '') }}">
                     </div>
                     
                     <div class="col-md-12">
@@ -72,41 +78,42 @@
                     <div id="baseInfoSection" class="row g-4 {% if producto and producto.variantes %}d-none{% endif %}">
                         <div class="col-md-3 mt-4">
                             <label class="form-label fw-bold text-brand-black text-truncate">Existencias (Base)</label>
-                            <input type="number" class="form-control bg-light border-0" name="cantidad_stock" value="{{ producto.cantidad_stock if producto else '0' }}">
+                            <input type="number" class="form-control bg-light border-0" name="cantidad_stock" value="{{ form_data.cantidad_stock if form_data else (producto.cantidad_stock if producto else '0') }}">
                         </div>
                         <div class="col-md-3 mt-4">
                             <label class="form-label fw-bold text-brand-black text-truncate">Costo Compra (Base)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-0">$</span>
-                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_costo" value="{{ "%.0f"|format(producto.precio_costo|float) if producto else '0' }}">
+                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_costo" value="{{ form_data.precio_costo if form_data else ("%.0f"|format(producto.precio_costo|float) if producto else '0') }}">
                             </div>
                         </div>
                         <div class="col-md-3 mt-4">
                             <label class="form-label fw-bold text-brand-black text-truncate">Precio Mínimo (Base)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-0">$</span>
-                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_minimo" value="{{ "%.0f"|format(producto.precio_minimo|float) if producto else '0' }}">
+                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_minimo" value="{{ form_data.precio_minimo if form_data else ("%.0f"|format(producto.precio_minimo|float) if producto else '0') }}">
                             </div>
                         </div>
                         <div class="col-md-3 mt-4">
                             <label class="form-label fw-bold text-brand-black text-truncate">Precio Sugerido (Base)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-0">$</span>
-                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_sugerido" value="{{ "%.0f"|format(producto.precio_sugerido|float) if producto else '0' }}">
+                                <input type="number" step="1" class="form-control bg-light border-0" name="precio_sugerido" value="{{ form_data.precio_sugerido if form_data else ("%.0f"|format(producto.precio_sugerido|float) if producto else '0') }}">
                             </div>
                         </div>
                     </div>
                     
                     <div class="col-md-6 mt-4">
                         <label class="form-label fw-bold text-brand-black">Imagen del Producto Maestro</label>
-                        <input type="file" class="form-control bg-light border-0" name="imagen" accept="image/*">
+                        <input type="file" class="form-control bg-light border-0" id="imagenInput" name="imagen" accept="image/*">
+                        <small id="imgCompressNotice" class="text-success small d-none mt-1"><i class="fa-solid fa-bolt me-1"></i>Foto optimizada para subida ultrarrápida.</small>
                         {% if producto and producto.imagen %}
                             <small class="text-muted d-block mt-2">Imagen actual: <a href="{{ url_for('static', filename='uploads/' ~ producto.imagen) }}" target="_blank">{{ producto.imagen }}</a></small>
                         {% endif %}
                     </div>
                     <div class="col-md-6 mt-4">
                         <label class="form-label fw-bold text-brand-black">Observaciones Generales</label>
-                        <textarea class="form-control bg-light border-0" name="observacion" rows="3" placeholder="Notas sobre el producto maestro...">{{ producto.observacion if producto and producto.observacion else '' }}</textarea>
+                        <textarea class="form-control bg-light border-0" name="observacion" rows="3" placeholder="Notas sobre el producto maestro...">{{ form_data.observacion if form_data else (producto.observacion if producto and producto.observacion else '') }}</textarea>
                     </div>
                 </div>
 
@@ -114,9 +121,9 @@
                 
                 <div class="text-end">
                     <a href="/inventory" class="btn btn-link text-muted text-decoration-none fw-bold me-3">Cancelar</a>
-                    <!-- Botón Guardar en Azul Turquesa -->
-                    <button type="submit" class="btn btn-blue px-5 py-2 rounded-pill shadow-sm fw-bold">
-                        Guardar Producto Maestro
+                    <button type="submit" id="btnSubmitProd" class="btn btn-blue px-5 py-2 rounded-pill shadow-sm fw-bold">
+                        <span class="btn-text">Guardar Producto Maestro</span>
+                        <span class="btn-spinner d-none"><i class="fa-solid fa-spinner fa-spin me-2"></i>Guardando...</span>
                     </button>
                 </div>
             </form>
@@ -156,11 +163,28 @@
 </template>
 
 <script>
+function generarSKUAuto() {
+    const nombre = document.getElementById('nombreInput').value.trim();
+    let prefix = 'SKU';
+    if (nombre) {
+        const cleaned = nombre.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (cleaned.length >= 3) {
+            prefix = cleaned.substring(0, 4);
+        }
+    }
+    const randomHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+    document.getElementById('skuInput').value = `${prefix}-${randomHex}`;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('variantsContainer');
     const addBtn = document.getElementById('addVariantBtn');
     const template = document.getElementById('variantTemplate');
     const baseInfoSection = document.getElementById('baseInfoSection');
+    const form = document.querySelector('form');
+    const btnSubmit = document.getElementById('btnSubmitProd');
+    const imagenInput = document.getElementById('imagenInput');
+    const imgNotice = document.getElementById('imgCompressNotice');
 
     function toggleBaseInfo() {
         if (container.children.length > 0) {
@@ -182,6 +206,64 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleBaseInfo();
         }
     });
+
+    // Compresión en el navegador para fotos tomadas desde smartphones
+    if (imagenInput) {
+        imagenInput.addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            
+            // Si pesa más de 500KB, comprimir en cliente para que suba en milisegundos
+            if (file.size > 500 * 1024) {
+                try {
+                    const bitmap = await createImageBitmap(file);
+                    const canvas = document.createElement('canvas');
+                    let width = bitmap.width;
+                    let height = bitmap.height;
+                    const maxDim = 1200;
+
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(bitmap, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(newFile);
+                            imagenInput.files = dataTransfer.files;
+                            imgNotice.classList.remove('d-none');
+                        }
+                    }, 'image/jpeg', 0.82);
+                } catch (e) {
+                    console.log('[Compresión Canvas no requerida]:', e);
+                }
+            }
+        });
+    }
+
+    // Prevención de envíos múltiples y feedback visual
+    if (form && btnSubmit) {
+        form.addEventListener('submit', () => {
+            btnSubmit.disabled = true;
+            btnSubmit.querySelector('.btn-text').classList.add('d-none');
+            btnSubmit.querySelector('.btn-spinner').classList.remove('d-none');
+        });
+    }
 });
 </script>
 {% endblock %}

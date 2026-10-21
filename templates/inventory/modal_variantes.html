@@ -123,9 +123,26 @@
                 {% endfor %}
                 
                 {% else %}
-                <div class="text-center p-4 border rounded bg-white mt-1 shadow-sm">
-                    <i class="fa-solid fa-boxes-stacked fs-3 text-muted mb-2 opacity-50"></i>
-                    <p class="text-muted small mb-0">Este producto actualmente utiliza <strong>stock plano</strong> y tarifas genéricas.<br>Añade variantes arriba para dividir su rango comercial.</p>
+                <div class="card border-0 shadow-sm p-4 bg-white rounded-3 mb-3 text-start">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+                            <i class="fa-solid fa-boxes-stacked fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-brand-black">Stock Plano / Sin Subcategorías</h6>
+                            <span class="text-muted small">Stock actual: <strong>{{ p.cantidad_stock }} unidades</strong></span>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ url_for('inventory_bp.sumar_stock_producto', id=p.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label class="form-label small fw-bold text-muted mb-1">Ingresar unidades adicionales (Sumar al inventario)</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-success bg-opacity-10 text-success fw-bold border-0"><i class="fa-solid fa-plus"></i></span>
+                            <input type="number" name="cantidad_sumar" class="form-control" placeholder="Ej: 10" min="1" required>
+                            <button type="submit" class="btn btn-success fw-bold px-3">Sumar Stock</button>
+                        </div>
+                        <small class="text-muted d-block">Ideal para ingresar rápidamente cajas o unidades de cargadores sin necesidad de crear variantes.</small>
+                    </form>
                 </div>
                 {% endif %}
             </div>

@@ -16,7 +16,7 @@ def login():
         
         # Validar contraseña cifrada
         if user and check_password_hash(user.password_hash, password):
-            login_user(user) # Iniciar sesión del lado del servidor persistente
+            login_user(user, remember=True) # Iniciar sesión persistente en PWA (no expira al cerrar la app)
             flash('¡Sesión iniciada con éxito!', 'success')
             
             # Redirección inteligente basada en ROL o hacia la raíz para delegar el control

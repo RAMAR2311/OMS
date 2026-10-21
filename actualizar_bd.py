@@ -37,6 +37,15 @@ def main():
             "ALTER TABLE price_approvals ADD COLUMN IF NOT EXISTS sale_id INTEGER;",
             # Tabla products (Borrado Lógico)
             "ALTER TABLE products ADD COLUMN IF NOT EXISTS activo BOOLEAN NOT NULL DEFAULT TRUE;",
+            # Índices de Alto Rendimiento para acelerar búsquedas y carga de catálogo
+            "CREATE INDEX IF NOT EXISTS idx_products_tipo_activo ON products(tipo_inventario, activo);",
+            "CREATE INDEX IF NOT EXISTS idx_products_nombre ON products(nombre);",
+            "CREATE INDEX IF NOT EXISTS idx_variants_product_id ON product_variants(product_id);",
+            "CREATE INDEX IF NOT EXISTS idx_sales_fecha_venta ON sales(fecha_venta);",
+            "CREATE INDEX IF NOT EXISTS idx_sales_vendedor ON sales(vendedor_id);",
+            "CREATE INDEX IF NOT EXISTS idx_sale_payments_sale ON sale_payments(sale_id);",
+            "CREATE INDEX IF NOT EXISTS idx_sale_details_sale ON sale_details(sale_id);",
+            "CREATE INDEX IF NOT EXISTS idx_expenses_fecha ON expenses(fecha_gasto);",
         ]
 
         for sql in columnas:

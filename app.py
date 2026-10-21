@@ -1,9 +1,12 @@
 import os
+from datetime import timedelta
 from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 from flask_wtf.csrf import CSRFProtect
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 
 # Importar la instancia de db desde models
 from models import db, User
@@ -15,32 +18,33 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-super-secreta')
     app.config['VALOR_MENSUALIDAD_SERVIDOR'] = os.environ.get('VALOR_MENSUALIDAD_SERVIDOR', '60.000')
     app.config['PIN_CONFIRMACION_SERVIDOR'] = os.environ.get('PIN_CONFIRMACION_SERVIDOR', '9876')
+
+    # Optimización de Sesiones PWA Móvil: evitar cierre de sesión al salir de la app
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=60)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=60)
+    app.config['REMEMBER_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_PROTECTION'] = 'basic'
+    app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Hasta 32MB para fotos de smartphones
     
-    # Detección inteligente de Base de Datos (PostgreSQL con Fallback automático a SQLite local)
+    # Detección inteligente de Base de Datos: DATABASE_URL para Nube/Producción, Fallback a SQLite local
     db_url = os.environ.get('DATABASE_URL')
     if not db_url:
-        try:
-            import socket
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex(('127.0.0.1', 5432))
-            sock.close()
-            if result == 0:
-                db_url = 'postgresql://postgres:admin123@127.0.0.1:5432/OMC'
-            else:
-                instance_path = os.path.join(app.root_path, 'instance')
-                os.makedirs(instance_path, exist_ok=True)
-                db_url = f"sqlite:///{os.path.join(instance_path, 'crm_inventory.db')}"
-        except Exception:
-            instance_path = os.path.join(app.root_path, 'instance')
-            os.makedirs(instance_path, exist_ok=True)
-            db_url = f"sqlite:///{os.path.join(instance_path, 'crm_inventory.db')}"
+        instance_path = os.path.join(app.root_path, 'instance')
+        os.makedirs(instance_path, exist_ok=True)
+        db_url = f"sqlite:///{os.path.join(instance_path, 'crm_inventory.db')}"
 
     if db_url.startswith("postgres://"):
         db_url = db_url.replace("postgres://", "postgresql://", 1)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # Optimización de conexión para SQLite (Modo WAL de alta velocidad y concurrencia sin bloqueos)
+    if 'sqlite' in db_url:
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            'connect_args': {'timeout': 30}
+        }
+
     app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
 
 
@@ -48,6 +52,16 @@ def create_app():
     db.init_app(app)
     Migrate(app, db)
     csrf = CSRFProtect(app)
+
+    # Activar WAL mode para SQLite en concurrencia si aplica
+    with app.app_context():
+        try:
+            if 'sqlite' in db_url:
+                with db.engine.connect() as conn:
+                    conn.exec_driver_sql("PRAGMA journal_mode=WAL;")
+                    conn.exec_driver_sql("PRAGMA synchronous=NORMAL;")
+        except Exception:
+            pass
     
     login_manager = LoginManager()
     login_manager.login_view = 'auth_bp.login'
@@ -88,6 +102,10 @@ def create_app():
     # Context Processor Global: Estado de Pago del Servidor
     @app.context_processor
     def inject_pago_servidor():
+        from flask import g
+        if hasattr(g, '_pago_servidor_cache'):
+            return dict(pago_servidor=g._pago_servidor_cache)
+
         import urllib.parse
         from datetime import datetime
         from itsdangerous import URLSafeTimedSerializer
@@ -226,6 +244,7 @@ def create_app():
                 'nequi_num': '3505422186'
             }
 
+        g._pago_servidor_cache = pago_servidor
         return dict(pago_servidor=pago_servidor)
 
 
