@@ -8,11 +8,15 @@ auth_bp = Blueprint('auth_bp', __name__)
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        email_raw = request.form.get('email') or ''
+        email = email_raw.strip().lower()
+        password = request.form.get('password') or ''
         
-        # Consultamos el usuario
-        user = User.query.filter_by(email=email).first()
+        # Consultamos el usuario de forma tolerante a mayúsculas/minúsculas o espacios
+        from sqlalchemy import func
+        user = User.query.filter(func.lower(User.email) == email).first()
+        if not user:
+            user = User.query.filter_by(email=email_raw.strip()).first()
         
         # Validar contraseña cifrada
         if user and check_password_hash(user.password_hash, password):

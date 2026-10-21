@@ -26,8 +26,34 @@ def create_app():
     app.config['SESSION_PROTECTION'] = 'basic'
     app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Hasta 32MB para fotos de smartphones
     
-    # Detección inteligente de Base de Datos: DATABASE_URL para Nube/Producción, Fallback a SQLite local
+    # Detección inteligente de Base de Datos: PostgreSQL en VPS Hostinger con Fallback a SQLite local
     db_url = os.environ.get('DATABASE_URL')
+    if not db_url:
+        try:
+            import socket
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex(('127.0.0.1', 5432))
+            sock.close()
+            if result == 0:
+                pg_candidate = 'postgresql://postgres:admin123@127.0.0.1:5432/OMC'
+                # En servidores Linux (Hostinger producción), conectar a PostgreSQL
+                if os.name != 'nt':
+                    db_url = pg_candidate
+                else:
+                    # En Windows (desarrollo local), validar credenciales antes de asignar
+                    try:
+                        from sqlalchemy import create_engine
+                        test_eng = create_engine(pg_candidate, connect_args={'connect_timeout': 1})
+                        with test_eng.connect():
+                            pass
+                        test_eng.dispose()
+                        db_url = pg_candidate
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
     if not db_url:
         instance_path = os.path.join(app.root_path, 'instance')
         os.makedirs(instance_path, exist_ok=True)
